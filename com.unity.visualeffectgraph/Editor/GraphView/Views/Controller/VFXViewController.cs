@@ -1274,6 +1274,9 @@ namespace UnityEditor.VFX.UI
             }
         }
 
+
+        public bool isSubgraph{get; private set;}
+
         VFXViewController(VisualEffectResource vfx) : base(vfx)
         {
             ModelChanged(vfx); // This will initialize the graph from the vfx asset.
@@ -1289,6 +1292,8 @@ namespace UnityEditor.VFX.UI
 
             if (m_Graph != null)
                 m_Graph.BuildParameterInfo();
+
+            isSubgraph = AssetDatabase.LoadAssetAtPath<VisualEffectAsset>(AssetDatabase.GetAssetPath(vfx)) == null;
 
             InitializeUndoStack();
             GraphChanged();
