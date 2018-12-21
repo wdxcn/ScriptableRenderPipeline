@@ -495,14 +495,16 @@ namespace UnityEditor.VFX
         {
             if (m_SubgraphDependencies != null && m_SubgraphDependencies.Contains(subgraph))
             {
-                RecurseSubgraphRecreateCopy(this);
                 if (expressionsChanged)
                 {
+                    RecurseSubgraphRecreateCopy(this);
                     compiledData.Compile(m_CompilationMode, m_ForceShaderValidation);
                     m_ExpressionGraphDirty = false;
                 }
                 else
+                {
                     compiledData.UpdateValues();
+                }
 
                 m_ExpressionValuesDirty = false;
             }
@@ -560,8 +562,9 @@ namespace UnityEditor.VFX
                     }
                     m_ExpressionGraphDirty = false;
 
-                    m_ExpressionValuesDirty = false; //TODOtristan make the code that updates the value.
+                    m_ExpressionValuesDirty = false;
                 }
+                   
             }
         }
 
