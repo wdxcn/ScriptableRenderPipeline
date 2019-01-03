@@ -635,6 +635,8 @@ namespace UnityEditor.VFX.UI
 
         public void Remove(IEnumerable<Controller> removedControllers)
         {
+            removedControllers = removedControllers.Except(removedControllers.OfType<VFXContextController>().Where(t => t.model is VFXBlockSubgraphContext)); //refuse to delete VFXBlockSubgraphContext
+
             var removedContexts = new HashSet<VFXContextController>(removedControllers.OfType<VFXContextController>());
 
             //remove all blocks that are in a removed context.
