@@ -1875,10 +1875,10 @@ namespace UnityEditor.VFX.UI
 
         public void UpdateSystems()
         {
-            VFXContext[] contexts = graph.children.OfType<VFXContext>().ToArray();
+            VFXContext[] directContexts = graph.children.OfType<VFXContext>().ToArray();
 
-            HashSet<VFXContext> initializes = new HashSet<VFXContext>(contexts.Where(t => t.contextType == VFXContextType.Init).ToArray());
-            HashSet<VFXContext> updates = new HashSet<VFXContext>(contexts.Where(t => t.contextType == VFXContextType.Update).ToArray());
+            HashSet<VFXContext> initializes = new HashSet<VFXContext>(directContexts.Where(t => t.contextType == VFXContextType.Init).ToArray());
+            HashSet<VFXContext> updates = new HashSet<VFXContext>(directContexts.Where(t => t.contextType == VFXContextType.Update).ToArray());
 
             List<Dictionary<VFXContext, int>> systems = new List<Dictionary<VFXContext, int>>();
 
@@ -1898,7 +1898,6 @@ namespace UnityEditor.VFX.UI
                     currentContext = updates.First();
                     updates.Remove(currentContext);
                 }
-
 
                 Dictionary<VFXContext, int> system = new Dictionary<VFXContext, int>();
 
@@ -1957,7 +1956,7 @@ namespace UnityEditor.VFX.UI
                         if (prevContext != null)
                         {
                             letter = 'A';
-                            contextToController[prevContext].letter = letter;
+                            prevContext.letter = letter;
                             prevContext = null;
                         }
 
@@ -1967,11 +1966,11 @@ namespace UnityEditor.VFX.UI
                             letter = 'α';
                         else if( letter == 'ω')
                             letter = 'A';
-                        contextToController[context].letter = ++letter;
+                        context.letter = ++letter;
                     }
                     else
                     {
-                        contextToController[context].letter = '\0';
+                        context.letter = '\0';
                         prevContext = context;
                     }
                     type = context.contextType;
