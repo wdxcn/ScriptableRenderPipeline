@@ -67,15 +67,6 @@ namespace UnityEditor
             ProjectWindowUtil.CreateAssetWithContent("New VFX.vfx", templateString,EditorGUIUtility.FindTexture(typeof(VisualEffectAsset)));
         }
 
-        internal class DoCreateNewSubgraphContext : EndNameEditAction
-        {
-            public override void Action(int instanceId, string pathName, string resourceFile)
-            {
-                var sg = VisualEffectResource.CreateNewSubgraphContext(pathName);
-                ProjectWindowUtil.FrameObjectInProjectWindow(sg.GetInstanceID());
-            }
-        }
-
         internal class DoCreateNewSubgraphOperator : EndNameEditAction
         {
             public override void Action(int instanceId, string pathName, string resourceFile)
@@ -92,14 +83,6 @@ namespace UnityEditor
                 var sg = VisualEffectResource.CreateNewSubgraphBlock(pathName);
                 ProjectWindowUtil.FrameObjectInProjectWindow(sg.GetInstanceID());
             }
-        }
-
-        [MenuItem("Assets/Create/Visual Effects/Visual Effect Subgraph Context", false, 307)]
-        public static void CreateVisualEffectSubgraphContext()
-        {
-            string fileName = "New VFX Subgraph Context.subvfxcontext";
-
-            CreateVisualEffectSubgraph<VisualEffectSubgraphContext, DoCreateNewSubgraphContext>(fileName, templateContextSubgraphAssetName);
         }
 
         [MenuItem("Assets/Create/Visual Effects/Visual Effect Subgraph Operator", false, 308)]
