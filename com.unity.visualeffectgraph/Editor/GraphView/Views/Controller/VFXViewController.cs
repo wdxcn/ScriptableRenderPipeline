@@ -764,7 +764,7 @@ namespace UnityEditor.VFX.UI
                 if (to != null)
                 {
                     to.sourceNode.OnEdgeFromInputGoingToBeRemoved(to);
-                    edge.output.sourceNode.OnEdgeFromOutputGoingToBeRemoved(edge.output);
+                    edge.output.sourceNode.OnEdgeFromOutputGoingToBeRemoved(edge.output,edge.input);
                     var slot = to.model;
                     if (slot != null)
                     {
