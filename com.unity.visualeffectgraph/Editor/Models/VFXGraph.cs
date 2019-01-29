@@ -444,7 +444,7 @@ namespace UnityEditor.VFX
             m_DependentDirty = true;
         }
 
-        void BuildSubGraphDependencies()
+        void BuildSubgraphDependencies()
         {
             if (m_SubgraphDependencies == null)
                 m_SubgraphDependencies = new List<VisualEffectObject>();
@@ -462,22 +462,22 @@ namespace UnityEditor.VFX
                 {
                     var subgraphContext = model as VFXSubgraphContext;
 
-                    if (subgraphContext.subGraph != null && !explored.Contains(subgraphContext.subGraph))
+                    if (subgraphContext.subgraph != null && !explored.Contains(subgraphContext.subgraph))
                     {
-                        explored.Add(subgraphContext.subGraph);
-                        m_SubgraphDependencies.Add(subgraphContext.subGraph);
-                        RecurseBuildDependencies(explored, subgraphContext.subGraph.GetResource().GetOrCreateGraph().children);
+                        explored.Add(subgraphContext.subgraph);
+                        m_SubgraphDependencies.Add(subgraphContext.subgraph);
+                        RecurseBuildDependencies(explored, subgraphContext.subgraph.GetResource().GetOrCreateGraph().children);
                     }
                 }
                 else if( model is VFXSubgraphOperator)
                 {
                     var subgraphOperator = model as VFXSubgraphOperator;
 
-                    if (subgraphOperator.subGraph != null && !explored.Contains(subgraphOperator.subGraph))
+                    if (subgraphOperator.subgraph != null && !explored.Contains(subgraphOperator.subgraph))
                     {
-                        explored.Add(subgraphOperator.subGraph);
-                        m_SubgraphDependencies.Add(subgraphOperator.subGraph);
-                        RecurseBuildDependencies(explored, subgraphOperator.subGraph.GetResource().GetOrCreateGraph().children);
+                        explored.Add(subgraphOperator.subgraph);
+                        m_SubgraphDependencies.Add(subgraphOperator.subgraph);
+                        RecurseBuildDependencies(explored, subgraphOperator.subgraph.GetResource().GetOrCreateGraph().children);
                     }
                 }
                 else if( model is VFXContext)
@@ -488,11 +488,11 @@ namespace UnityEditor.VFX
                         {
                             var subgraphBlock = block as VFXSubgraphBlock;
 
-                            if (subgraphBlock.subGraph != null && !explored.Contains(subgraphBlock.subGraph))
+                            if (subgraphBlock.subgraph != null && !explored.Contains(subgraphBlock.subgraph))
                             {
-                                explored.Add(subgraphBlock.subGraph);
-                                m_SubgraphDependencies.Add(subgraphBlock.subGraph);
-                                RecurseBuildDependencies(explored, subgraphBlock.subGraph.GetResource().GetOrCreateGraph().children);
+                                explored.Add(subgraphBlock.subgraph);
+                                m_SubgraphDependencies.Add(subgraphBlock.subgraph);
+                                RecurseBuildDependencies(explored, subgraphBlock.subgraph.GetResource().GetOrCreateGraph().children);
                             }
                         }
                     }
@@ -507,8 +507,8 @@ namespace UnityEditor.VFX
                 if (child is VFXSubgraphContext)
                 {
                     var subgraphContext = child as VFXSubgraphContext;
-                    if( subgraphContext.subGraph != null)
-                        RecurseSubgraphRecreateCopy(subgraphContext.subGraph.GetResource().GetOrCreateGraph());
+                    if( subgraphContext.subgraph != null)
+                        RecurseSubgraphRecreateCopy(subgraphContext.subgraph.GetResource().GetOrCreateGraph());
                     subgraphContext.RecreateCopy();
                 }
                 else if(child is VFXContext)
@@ -519,8 +519,8 @@ namespace UnityEditor.VFX
                         {
 
                             var subgraphBlock = block as VFXSubgraphBlock;
-                            if (subgraphBlock.subGraph != null)
-                                RecurseSubgraphRecreateCopy(subgraphBlock.subGraph.GetResource().GetOrCreateGraph());
+                            if (subgraphBlock.subgraph != null)
+                                RecurseSubgraphRecreateCopy(subgraphBlock.subgraph.GetResource().GetOrCreateGraph());
                             subgraphBlock.RecreateCopy();
                         }
                     }
@@ -587,7 +587,7 @@ namespace UnityEditor.VFX
                 bool considerGraphDirty = m_ExpressionGraphDirty && !preventRecompilation;
                 if (considerGraphDirty)
                 {
-                    BuildSubGraphDependencies();
+                    BuildSubgraphDependencies();
                     RecurseSubgraphRecreateCopy(this);
 
                     ComputeDataIndices();
