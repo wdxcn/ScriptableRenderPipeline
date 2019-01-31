@@ -1588,13 +1588,18 @@ namespace UnityEditor.VFX.UI
             }
 
 
-            if( selection.OfType<VFXNodeUI>().Any() )
+            if (selection.OfType<VFXNodeUI>().Any())
             {
                 if (selection.OfType<VFXOperatorUI>().Any() && !selection.OfType<VFXNodeUI>().Any(t => !(t is VFXOperatorUI) && !(t is VFXParameterUI)))
                     evt.menu.InsertAction(3, "To Subgraph Operator", ToSubgraphOperator, e => DropdownMenuAction.Status.Normal);
-                else if(SelectionHasCompleteSystems() )
+                else if (SelectionHasCompleteSystems())
                     evt.menu.InsertAction(3, "To Subgraph", ToSubgraphContext, e => DropdownMenuAction.Status.Normal);
+                else if (selection.OfType<VFXBlockUI>().Any() && selection.OfType<VFXBlockUI>().Select(t => t.context).Distinct().Count() == 1)
+                {
+                    evt.menu.InsertAction(3, "To Subgraph Block", ToSubgraphBlock, e => DropdownMenuAction.Status.Normal);
+                }
             }
+            
         }
 
 
@@ -1613,6 +1618,12 @@ namespace UnityEditor.VFX.UI
             }
 
             return true;
+        }
+
+
+        void ToSubgraphBlock(DropdownMenuAction a)
+        {
+            VFXConvertSubgraph.ConvertToSubgraphBlock(this, selection.OfType<IControlledElement>().Select(t => t.controller), GetElementsBounds(selection.Where(t => !(t is Edge)).Cast<GraphElement>()));
         }
 
 
