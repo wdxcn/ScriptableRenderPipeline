@@ -17,6 +17,17 @@ using PositionType = UnityEngine.UIElements.Position;
 
 namespace UnityEditor.VFX.UI
 {
+    public class VFXViewModicationProcessor : UnityEditor.AssetModificationProcessor
+    {
+        public static bool assetMoved = false;
+
+        private static AssetMoveResult OnWillMoveAsset(string sourcePath, string destinationPath)
+        {
+            assetMoved = true;
+            return AssetMoveResult.DidNotMove;
+        }
+    }
+
     class VFXView : GraphView, IControlledElement<VFXViewController>, IControllerListener
     {
         public HashSet<VFXEditableDataAnchor> allDataAnchors = new HashSet<VFXEditableDataAnchor>();
@@ -1716,6 +1727,14 @@ namespace UnityEditor.VFX.UI
                     //TODO add to picked groupnode
                     e.StopPropagation();
                 }
+            }
+        }
+
+        public void AssetMoved()
+        {
+            foreach (var item in this.Query<VFXNodeUI>().ToList())
+            {
+                item.AssetMoved();
             }
         }
     }
