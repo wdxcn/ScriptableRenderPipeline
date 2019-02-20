@@ -266,7 +266,7 @@ namespace UnityEditor.ShaderGraph
 
             if (outputNode != null)
             {
-                var outputStage = ((SubGraphOutputNode)outputNode).effectiveShaderStage;
+                var outputStage = outputNode.effectiveShaderStage;
 
                 foreach (var slot in NodeExtensions.GetInputSlots<MaterialSlot>(outputNode))
                 {
@@ -285,10 +285,9 @@ namespace UnityEditor.ShaderGraph
             GetInputSlots(slots);
             GetOutputSlots(slots);
 
-            var subGraphOutputNode = outputNode;
             if (outputNode != null)
             {
-                var outputStage = ((SubGraphOutputNode)subGraphOutputNode).effectiveShaderStage;
+                var outputStage = outputNode.effectiveShaderStage;
                 foreach(MaterialSlot slot in slots)
                     slot.stageCapability = outputStage;
             }

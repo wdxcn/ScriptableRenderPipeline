@@ -58,7 +58,7 @@ namespace UnityEditor.ShaderGraph
 
         public override bool hasPreview
         {
-            get { return true; }
+            get { return false; }
         }
 
         public override PreviewMode previewMode

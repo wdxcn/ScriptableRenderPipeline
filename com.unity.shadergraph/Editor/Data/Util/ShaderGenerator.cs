@@ -819,6 +819,9 @@ namespace UnityEditor.ShaderGraph
             if (node != null)
             {
                 var outputSlot = node.GetOutputSlots<MaterialSlot>().FirstOrDefault();
+                // Subgraph Output uses first input slot
+                if (node is SubGraphOutputNode)
+                    outputSlot = node.GetInputSlots<MaterialSlot>().FirstOrDefault();
                 if (outputSlot != null)
                 {
                     var result = string.Format("surf.{0}", NodeUtils.GetHLSLSafeName(outputSlot.shaderOutputName));

@@ -394,13 +394,13 @@ namespace UnityEditor.ShaderGraph.Drawing
 
             foreach (var node in m_NodesToUpdate)
             {
-                if (node == masterRenderData.shaderData.node)
+                if (node is IMasterNode)
                 {
                     UpdateMasterNodeShader();
                     continue;
                 }
                 
-                if (!node.hasPreview)
+                if (!node.hasPreview && !(node is SubGraphOutputNode))
                     continue;
 
                 var results = m_Graph.GetPreviewShader(node);

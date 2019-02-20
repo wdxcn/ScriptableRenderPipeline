@@ -1154,30 +1154,15 @@ namespace UnityEditor.ShaderGraph
                 surfaceDescriptionFunction.AppendLine("{0} surface = ({0})0;", surfaceDescriptionName);
                 foreach (var activeNode in activeNodeList.OfType<AbstractMaterialNode>())
                 {
-                    if (activeNode is IGeneratesFunction)
+                    if (activeNode is IGeneratesFunction functionNode)
                     {
                         functionRegistry.builder.currentNode = activeNode;
-                        (activeNode as IGeneratesFunction).GenerateNodeFunction(functionRegistry, graphContext, mode);
+                        functionNode.GenerateNodeFunction(functionRegistry, graphContext, mode);
                     }
 
-                    if (activeNode is IGeneratesBodyCode)
-                        (activeNode as IGeneratesBodyCode).GenerateNodeCode(sg, graphContext, mode);
-
-                    // In case of the subgraph output node, the preview is generated
-                    // from the first input to the node.
-                    if (activeNode is SubGraphOutputNode)
+                    if (activeNode is IGeneratesBodyCode bodyNode)
                     {
-                        var inputSlot = activeNode.GetInputSlots<MaterialSlot>().FirstOrDefault();
-                        if (inputSlot != null)
-                        {
-                            var foundEdges = graph.GetEdges(inputSlot.slotReference).ToArray();
-                            string slotValue = foundEdges.Any()
-                                ? activeNode.GetSlotValue(inputSlot.id, mode)
-                                : inputSlot.GetDefaultValue(mode);
-                            sg.AddShaderChunk(
-                                String.Format("if ({0} == {1}) {{ surface.PreviewOutput = {2}; return surface; }}",
-                                    outputIdProperty.referenceName, activeNode.tempId.index, slotValue), false);
-                        }
+                        bodyNode.GenerateNodeCode(sg, graphContext, mode);
                     }
 
                     activeNode.CollectShaderProperties(shaderProperties, mode);
@@ -1186,7 +1171,7 @@ namespace UnityEditor.ShaderGraph
                 surfaceDescriptionFunction.AppendLines(sg.GetShaderString(0));
                 functionRegistry.builder.currentNode = null;
 
-                if (rootNode is IMasterNode)
+                if (rootNode is IMasterNode || rootNode is SubGraphOutputNode)
                 {
                     var usedSlots = slots ?? rootNode.GetInputSlots<MaterialSlot>();
                     foreach (var input in usedSlots)
