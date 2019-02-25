@@ -406,18 +406,19 @@ namespace UnityEditor.ShaderGraph.Drawing
                 var results = m_Graph.GetPreviewShader(node);
 
                 var renderData = GetRenderData(node.tempId);
-                BeginCompile(renderData, results.shader);
+                // Always explicitly use pass 0 for preview shaders
+                BeginCompile(renderData, results.shader, 0);
             }
 
             ShaderUtil.allowAsyncCompilation = wasAsyncAllowed;
             m_NodesToUpdate.Clear();
         }
 
-        void BeginCompile(PreviewRenderData renderData, string shaderStr)
+        void BeginCompile(PreviewRenderData renderData, string shaderStr, int shaderPass)
         {
             var shaderData = renderData.shaderData;
             ShaderUtil.UpdateShaderAsset(shaderData.shader, shaderStr, false);
-            ShaderUtil.CompilePass(shaderData.mat, 0);
+            ShaderUtil.CompilePass(shaderData.mat, shaderPass);
             shaderData.isCompiling = true;
             renderData.NotifyPreviewChanged();
         }
@@ -523,7 +524,8 @@ namespace UnityEditor.ShaderGraph.Drawing
             {
                 ShaderUtil.ClearCachedData(shaderData.shader);
             }
-            BeginCompile(masterRenderData, shaderData.shaderString);
+
+            BeginCompile(masterRenderData, shaderData.shaderString, masterNode.GetActiveSubShader()?.GetPreviewPassIndex() ?? 0);
         }
 
         void DestroyRenderData(PreviewRenderData renderData)

@@ -283,6 +283,8 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             }
         };
 
+        public int GetPreviewPassIndex() { return 0; }
+
         private static string[] m_ColorMasks = new string[8]
         {
             "ColorMask 0 2 ColorMask 0 3",     // nothing

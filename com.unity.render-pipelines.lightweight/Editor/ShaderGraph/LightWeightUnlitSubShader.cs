@@ -50,6 +50,8 @@ namespace UnityEngine.Rendering.LWRP
                 PBRMasterNode.PositionSlotId
             }
         };
+        
+        public int GetPreviewPassIndex() { return 0; }
 
         public string GetSubshader(IMasterNode masterNode, GenerationMode mode, List<string> sourceAssetDependencyPaths = null)
         {

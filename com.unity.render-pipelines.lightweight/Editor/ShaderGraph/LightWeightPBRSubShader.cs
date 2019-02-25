@@ -79,6 +79,8 @@ namespace UnityEditor.Rendering.LWRP
             }
         };
 
+        public int GetPreviewPassIndex() { return 0; }
+
         public string GetSubshader(IMasterNode masterNode, GenerationMode mode, List<string> sourceAssetDependencyPaths = null)
         {
             if (sourceAssetDependencyPaths != null)
