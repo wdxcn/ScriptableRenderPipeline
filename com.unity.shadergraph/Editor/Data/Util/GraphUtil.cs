@@ -912,13 +912,7 @@ namespace UnityEditor.ShaderGraph
             outputList.Add(node);
         }
 
-        public static GenerationResults GetShader(this GraphData graph, AbstractMaterialNode node,
-            GenerationMode mode, string name)
-        {
-            return GetShader(graph, node, new List<AbstractMaterialNode>(), mode, name);
-        }
-        
-        public static GenerationResults GetShader(this GraphData graph, AbstractMaterialNode node, ICollection<AbstractMaterialNode> excludedNodes, GenerationMode mode, string name)
+        public static GenerationResults GetShader(this GraphData graph, AbstractMaterialNode node, GenerationMode mode, string name)
         {
             // ----------------------------------------------------- //
             //                         SETUP                         //
@@ -1015,7 +1009,7 @@ namespace UnityEditor.ShaderGraph
             // -------------------------------------
             // Generate Output structure for Surface Description function
 
-            GenerateSurfaceDescriptionStruct(surfaceDescriptionStruct, slots, mode);
+            GenerateSurfaceDescriptionStruct(surfaceDescriptionStruct, slots);
 
             // -------------------------------------
             // Generate Surface Description function
@@ -1105,7 +1099,7 @@ namespace UnityEditor.ShaderGraph
             return results;
         }
 
-        public static void GenerateSurfaceDescriptionStruct(ShaderStringBuilder surfaceDescriptionStruct, List<MaterialSlot> slots, GenerationMode mode, string structName = "SurfaceDescription", HashSet<string> activeFields = null)
+        public static void GenerateSurfaceDescriptionStruct(ShaderStringBuilder surfaceDescriptionStruct, List<MaterialSlot> slots, string structName = "SurfaceDescription", HashSet<string> activeFields = null)
         {
             surfaceDescriptionStruct.AppendLine("struct {0}", structName);
             using (surfaceDescriptionStruct.BlockSemicolonScope())

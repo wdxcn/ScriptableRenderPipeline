@@ -825,9 +825,17 @@ namespace UnityEditor.ShaderGraph
             {
                 outputSlot = node.GetInputSlots<MaterialSlot>().FirstOrDefault();
             }
-            var result = string.Format("surf.{0}", NodeUtils.GetHLSLSafeName(outputSlot.shaderOutputName));
-            pixelShaderSurfaceRemap.AppendLine("return all(isfinite({0})) ? {1} : {2};",
-                result, AdaptNodeOutputForPreview(node, outputSlot.id, result), nanOutput);
+
+            if (outputSlot != null)
+            {
+                var result = string.Format("surf.{0}", NodeUtils.GetHLSLSafeName(outputSlot.shaderOutputName));
+                pixelShaderSurfaceRemap.AppendLine("return all(isfinite({0})) ? {1} : {2};",
+                    result, AdaptNodeOutputForPreview(node, outputSlot.id, result), nanOutput);
+            }
+            else
+            {
+                pixelShaderSurfaceRemap.AppendLine("return No_Slots_Found_For_Preview");
+            }
 
             // -------------------------------------
             // Extra pixel shader work

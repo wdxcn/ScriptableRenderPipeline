@@ -143,7 +143,7 @@ namespace UnityEditor.ShaderGraph.Drawing
             Downstream
         }
 
-        void PropagateNodeList(ICollection<AbstractMaterialNode> nodes, PropagationDirection dir)
+        void PropagateNodeList<T>(T nodes, PropagationDirection dir) where T : ICollection<AbstractMaterialNode>
         {
             m_NodeWave.Clear();
             foreach (var node in nodes)
@@ -157,15 +157,15 @@ namespace UnityEditor.ShaderGraph.Drawing
 
                 m_NextLevelNodes.Clear();
                 GetConnectedNodes(node, dir, m_NextLevelNodes);
-                m_NextLevelNodes.ForEach(n =>
+                foreach (var nextNode in m_NextLevelNodes)
                 {
-                    nodes.Add(n);
-                    m_NodeWave.Push(n);
-                });
+                    nodes.Add(nextNode);
+                    m_NodeWave.Push(nextNode);
+                }
             }
         }
 
-        void GetConnectedNodes(AbstractMaterialNode node, PropagationDirection dir, ICollection<AbstractMaterialNode> connections)
+        void GetConnectedNodes<T>(AbstractMaterialNode node, PropagationDirection dir, T connections) where T : ICollection<AbstractMaterialNode>
         {
             // Loop through all nodes that the node feeds into.
             m_Slots.Clear();
@@ -361,13 +361,13 @@ namespace UnityEditor.ShaderGraph.Drawing
 
         public void ForceShaderUpdate()
         {
-            m_RenderDatas.ForEach(data =>
+            foreach (var data in m_RenderDatas)
             {
                 if (data != null)
                 {
                     m_NodesToUpdate.Add(data.shaderData.node);
                 }
-            });
+            }
         }
 
         void UpdateShaders()
@@ -666,9 +666,9 @@ Shader ""hidden/preview""
         }
     }
 
-    internal delegate void OnPreviewChanged();
+    delegate void OnPreviewChanged();
 
-    internal class PreviewShaderData
+    class PreviewShaderData
     {
         public AbstractMaterialNode node { get; set; }
         public Shader shader { get; set; }
@@ -679,7 +679,7 @@ Shader ""hidden/preview""
         public bool hasError { get; set; }
     }
 
-    internal class PreviewRenderData
+    class PreviewRenderData
     {
         public PreviewShaderData shaderData { get; set; }
         public RenderTexture renderTexture { get; set; }
