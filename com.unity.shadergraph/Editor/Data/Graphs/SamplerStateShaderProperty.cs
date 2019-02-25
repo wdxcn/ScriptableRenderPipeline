@@ -6,6 +6,14 @@ namespace UnityEditor.ShaderGraph
 {
     class SamplerStateShaderProperty : AbstractShaderProperty<TextureSamplerState>
     {
+        public SamplerStateShaderProperty()
+        {
+            displayName = "SamplerState";
+
+            if(value == null)
+                value = new TextureSamplerState();
+        }
+
         public override PropertyType propertyType
         {
             get { return PropertyType.SamplerState; }
@@ -28,7 +36,10 @@ namespace UnityEditor.ShaderGraph
 
         public override string GetPropertyDeclarationString(string delimiter = ";")
         {
-            return string.Format(@"SAMPLER({0}){1}", referenceName, delimiter);
+            return string.Format(@"SAMPLER({0}_{1}_{2}){3}", referenceName, 
+                Enum.GetName(typeof(TextureSamplerState.FilterMode), value.filter), 
+                Enum.GetName(typeof(TextureSamplerState.WrapMode), value.wrap), 
+                delimiter);
         }
 
         public override PreviewProperty GetPreviewMaterialProperty()
