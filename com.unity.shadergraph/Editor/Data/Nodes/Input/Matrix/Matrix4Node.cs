@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace UnityEditor.ShaderGraph
 {
     [Title("Input", "Matrix", "Matrix 4x4")]
-    class Matrix4Node : AbstractMaterialNode, IGeneratesBodyCode
+    class Matrix4Node : AbstractMaterialNode, IGeneratesBodyCode, IPropertyFromNode
     {
         public const int OutputSlotId = 0;
         const string kOutputSlotName = "Out";
@@ -172,5 +172,12 @@ namespace UnityEditor.ShaderGraph
         {
             return GetVariableNameForNode();
         }
+
+        public AbstractShaderProperty AsShaderProperty()
+        {
+            return new Matrix4ShaderProperty { value = new Matrix4x4(row0, row1, row2, row3) };
+        }
+
+        public int outputSlotId { get { return OutputSlotId; } }
     }
 }

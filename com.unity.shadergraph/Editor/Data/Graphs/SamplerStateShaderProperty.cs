@@ -49,7 +49,11 @@ namespace UnityEditor.ShaderGraph
 
         public override AbstractMaterialNode ToConcreteNode()
         {
-            return new SamplerStateNode();
+            return new SamplerStateNode() 
+            {
+                filter = value.filter,
+                wrap = value.wrap
+            };
         }
 
         public override AbstractShaderProperty Copy()
