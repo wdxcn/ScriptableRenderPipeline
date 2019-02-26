@@ -497,13 +497,6 @@ namespace UnityEditor.ShaderGraph.Drawing
             List<PropertyCollector.TextureInfo> configuredTextures;
             shaderData.shaderString = masterNode.GetShader(GenerationMode.Preview, shaderData.node.name, out configuredTextures);
 
-            var debugOutputPath = DefaultShaderIncludes.GetDebugOutputPath();
-            if (!string.IsNullOrEmpty(debugOutputPath))
-            {
-                File.WriteAllText(debugOutputPath + "/GeneratedShader.shader",
-                    (shaderData.shaderString ?? "null").Replace("UnityEngine.MaterialGraph", "Generated"));
-            }
-
             if (string.IsNullOrEmpty(shaderData.shaderString))
             {
                 if (shaderData.shader != null)

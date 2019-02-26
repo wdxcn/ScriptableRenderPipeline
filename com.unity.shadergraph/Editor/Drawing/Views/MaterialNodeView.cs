@@ -292,8 +292,19 @@ namespace UnityEditor.ShaderGraph.Drawing
             if (evt.target is Node)
             {
                 var canViewShader = node.hasPreview || node is IMasterNode;
-                evt.menu.AppendAction("Copy Shader", CopyToClipboard, _ => canViewShader ? DropdownMenuAction.Status.Normal : DropdownMenuAction.Status.Hidden);
-                evt.menu.AppendAction("Show Generated Code", ShowGeneratedCode, _ => canViewShader ? DropdownMenuAction.Status.Normal : DropdownMenuAction.Status.Hidden);
+                evt.menu.AppendAction("Copy Shader", CopyToClipboard,
+                    _ => canViewShader ? DropdownMenuAction.Status.Normal : DropdownMenuAction.Status.Hidden,
+                    GenerationMode.ForReals);
+                evt.menu.AppendAction("Show Generated Code", ShowGeneratedCode,
+                    _ => canViewShader ? DropdownMenuAction.Status.Normal : DropdownMenuAction.Status.Hidden,
+                    GenerationMode.ForReals);
+                
+                if (Unsupported.IsDeveloperMode())
+                {
+                    evt.menu.AppendAction("Show Preview Code", ShowGeneratedCode,
+                        _ => canViewShader ? DropdownMenuAction.Status.Normal : DropdownMenuAction.Status.Hidden,
+                        GenerationMode.Preview);
+                }
             }
 
             base.BuildContextualMenu(evt);
@@ -301,7 +312,7 @@ namespace UnityEditor.ShaderGraph.Drawing
 
         void CopyToClipboard(DropdownMenuAction action)
         {
-            GUIUtility.systemCopyBuffer = ConvertToShader();
+            GUIUtility.systemCopyBuffer = ConvertToShader((GenerationMode) action.userData);
         }
 
         public string SanitizeName(string name)
@@ -312,21 +323,21 @@ namespace UnityEditor.ShaderGraph.Drawing
         public void ShowGeneratedCode(DropdownMenuAction action)
         {
             string name = GetFirstAncestorOfType<GraphEditorView>().assetName;
+            var mode = (GenerationMode)action.userData;
 
-            string path = String.Format("Temp/GeneratedFromGraph-{0}-{1}-{2}.shader", SanitizeName(name), SanitizeName(node.name), node.guid);
-            if (GraphUtil.WriteToFile(path, ConvertToShader()))
+            string path = String.Format("Temp/GeneratedFromGraph-{0}-{1}-{2}{3}.shader", SanitizeName(name),
+                SanitizeName(node.name), node.guid, mode == GenerationMode.Preview ? "-Preview" : "");
+            if (GraphUtil.WriteToFile(path, ConvertToShader(mode)))
                 GraphUtil.OpenFile(path);
         }
 
-        string ConvertToShader()
+        string ConvertToShader(GenerationMode mode)
         {
             List<PropertyCollector.TextureInfo> textureInfo;
-            var masterNode = node as IMasterNode;
-            if (masterNode != null)
-                return masterNode.GetShader(GenerationMode.ForReals, node.name, out textureInfo);
+            if (node is IMasterNode masterNode)
+                return masterNode.GetShader(mode, node.name, out textureInfo);
 
-            var graph = (GraphData)node.owner;
-            return graph.GetShader(node, GenerationMode.ForReals, node.name).shader;
+            return node.owner.GetShader(node, mode, node.name).shader;
         }
 
         void RecreateSettings()
