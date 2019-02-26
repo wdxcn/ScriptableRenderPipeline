@@ -34,25 +34,28 @@ namespace UnityEditor.ShaderGraph.Drawing
             m_Graph = graph;
             m_Property = property;
 
-            m_ExposedToogle = new Toggle();
-            m_ExposedToogle.OnToggleChanged(evt =>
+            if(property.isExposable)
             {
-                m_Graph.owner.RegisterCompleteObjectUndo("Change Exposed Toggle");
-                if(m_OnExposedToggle != null)
-                    m_OnExposedToggle();
-                property.generatePropertyBlock = evt.newValue;
-                if (property.generatePropertyBlock)
+                m_ExposedToogle = new Toggle();
+                m_ExposedToogle.OnToggleChanged(evt =>
                 {
-                    m_BlackboardField.icon = BlackboardProvider.exposedIcon;
-                }
-                else
-                {
-                    m_BlackboardField.icon = null;
-                }
-                DirtyNodes(ModificationScope.Graph);
-            });
-            m_ExposedToogle.value = property.generatePropertyBlock;
-            AddRow("Exposed", m_ExposedToogle);
+                    m_Graph.owner.RegisterCompleteObjectUndo("Change Exposed Toggle");
+                    if(m_OnExposedToggle != null)
+                        m_OnExposedToggle();
+                    property.generatePropertyBlock = evt.newValue;
+                    if (property.generatePropertyBlock)
+                    {
+                        m_BlackboardField.icon = BlackboardProvider.exposedIcon;
+                    }
+                    else
+                    {
+                        m_BlackboardField.icon = null;
+                    }
+                    DirtyNodes(ModificationScope.Graph);
+                });
+                m_ExposedToogle.value = property.generatePropertyBlock;
+                AddRow("Exposed", m_ExposedToogle);
+            }
 
             m_ReferenceNameField = new TextField(512, false, false, ' ');
             m_ReferenceNameField.styleSheets.Add(Resources.Load<StyleSheet>("Styles/PropertyNameReferenceField"));

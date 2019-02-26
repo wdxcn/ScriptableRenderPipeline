@@ -22,6 +22,11 @@ namespace UnityEditor.ShaderGraph
             get { return true; }
         }
 
+        public override bool isExposable
+        {
+            get { return false; }
+        }
+
         public override string GetPropertyDeclarationString(string delimiter = ";")
         {
             return "float2x2 " + referenceName + " = float2x2(1, 0, 0, 1)" + delimiter;

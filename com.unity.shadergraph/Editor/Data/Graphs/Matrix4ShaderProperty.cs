@@ -22,6 +22,11 @@ namespace UnityEditor.ShaderGraph
             get { return true; }
         }
 
+        public override bool isExposable
+        {
+            get { return false; }
+        }
+
         public override string GetPropertyAsArgumentString()
         {
             return "float4x4 " + referenceName;
