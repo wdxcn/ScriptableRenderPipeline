@@ -277,6 +277,14 @@ namespace UnityEditor.ShaderGraph
                     if (tSlot != null && tProp != null)
                         tSlot.cubemap = tProp.value.cubemap;
                 }
+                // copy default for gradient for niceness
+                else if (slotType == SlotValueType.Gradient && propType == PropertyType.Gradient)
+                {
+                    var tSlot = slot as GradientInputMaterialSlot;
+                    var tProp = prop as GradientShaderProperty;
+                    if (tSlot != null && tProp != null)
+                        tSlot.value = tProp.value;
+                }
                 AddSlot(slot);
                 validNames.Add(id);
             }
