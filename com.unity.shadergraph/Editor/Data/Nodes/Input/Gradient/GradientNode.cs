@@ -114,41 +114,11 @@ namespace UnityEditor.ShaderGraph
         {
             base.CollectPreviewMaterialProperties(properties);
 
-            properties.Add(new PreviewProperty(PropertyType.Vector1)
+            properties.Add(new PreviewProperty(PropertyType.Gradient)
             {
-                name = string.Format("_{0}_Type", GetVariableNameForNode()),
-                floatValue = (int)gradient.mode
+                name = GetVariableNameForNode(),
+                gradientValue = gradient
             });
-
-            properties.Add(new PreviewProperty(PropertyType.Vector1)
-            {
-                name = string.Format("_{0}_ColorsLength", GetVariableNameForNode()),
-                floatValue = gradient.colorKeys.Length
-            });
-
-            properties.Add(new PreviewProperty(PropertyType.Vector1)
-            {
-                name = string.Format("_{0}_AlphasLength", GetVariableNameForNode()),
-                floatValue = gradient.alphaKeys.Length
-            });
-
-            for (int i = 0; i < 8; i++)
-            {
-                properties.Add(new PreviewProperty(PropertyType.Vector4)
-                {
-                    name = string.Format("_{0}_ColorKey{1}", GetVariableNameForNode(), i),
-                    vector4Value = i < gradient.colorKeys.Length ? GradientUtils.ColorKeyToVector(gradient.colorKeys[i]) : Vector4.zero
-                });
-            }
-
-            for (int i = 0; i < 8; i++)
-            {
-                properties.Add(new PreviewProperty(PropertyType.Vector2)
-                {
-                    name = string.Format("_{0}_AlphaKey{1}", GetVariableNameForNode(), i),
-                    vector4Value = i < gradient.alphaKeys.Length ? GradientUtils.AlphaKeyToVector(gradient.alphaKeys[i]) : Vector2.zero
-                });
-            }
         }
 
         public override void CollectShaderProperties(PropertyCollector properties, GenerationMode generationMode)
@@ -158,46 +128,7 @@ namespace UnityEditor.ShaderGraph
 
             base.CollectShaderProperties(properties, generationMode);
 
-            properties.AddShaderProperty(new Vector1ShaderProperty()
-            {
-                overrideReferenceName = string.Format("{0}_Type", GetVariableNameForNode()),
-                value = (int)gradient.mode,
-                generatePropertyBlock = false
-            });
-
-            properties.AddShaderProperty(new Vector1ShaderProperty()
-            {
-                overrideReferenceName = string.Format("{0}_ColorsLength", GetVariableNameForNode()),
-                value = gradient.colorKeys.Length,
-                generatePropertyBlock = false
-            });
-
-            properties.AddShaderProperty(new Vector1ShaderProperty()
-            {
-                overrideReferenceName = string.Format("{0}_AlphasLength", GetVariableNameForNode()),
-                value = gradient.alphaKeys.Length,
-                generatePropertyBlock = false
-            });
-
-            for (int i = 0; i < 8; i++)
-            {
-                properties.AddShaderProperty(new Vector4ShaderProperty()
-                {
-                    overrideReferenceName = string.Format("{0}_ColorKey{1}", GetVariableNameForNode(), i),
-                    value = i < gradient.colorKeys.Length ? GradientUtils.ColorKeyToVector(gradient.colorKeys[i]) : Vector4.zero,
-                    generatePropertyBlock = false
-                });
-            }
-
-            for (int i = 0; i < 8; i++)
-            {
-                properties.AddShaderProperty(new Vector2ShaderProperty()
-                {
-                    overrideReferenceName = string.Format("{0}_AlphaKey{1}", GetVariableNameForNode(), i),
-                    value = i < gradient.alphaKeys.Length ? GradientUtils.AlphaKeyToVector(gradient.alphaKeys[i]) : Vector2.zero,
-                    generatePropertyBlock = false
-                });
-            }
+            GradientUtils.GetGradientPropertiesForPreview(properties, GetVariableNameForNode(), gradient);
         }
 
         public AbstractShaderProperty AsShaderProperty()

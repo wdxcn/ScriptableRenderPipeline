@@ -201,11 +201,20 @@ namespace UnityEditor.ShaderGraph
             }
             else if (property is GradientShaderProperty)
             {
-                var result = string.Format("Gradient {1} = {2};"
-                        , precision
+                if(generationMode == GenerationMode.Preview)
+                {
+                    var result = string.Format("Gradient {0} = {1};"
+                        , GetVariableNameForSlot(OutputSlotId) 
+                        , GradientUtils.GetGradientForPreview(property.referenceName));
+                    visitor.AddShaderChunk(result, true);
+                }
+                else
+                {
+                    var result = string.Format("Gradient {0} = {1};"
                         , GetVariableNameForSlot(OutputSlotId)
                         , property.referenceName);
-                visitor.AddShaderChunk(result, true);
+                    visitor.AddShaderChunk(result, true);
+                }
             }
         }
 

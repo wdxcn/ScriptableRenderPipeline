@@ -92,6 +92,50 @@ namespace UnityEditor.ShaderGraph
                 , alphaKeys);
         }
 
+        public static void GetGradientPropertiesForPreview(PropertyCollector properties, string name, Gradient value)
+        {
+            properties.AddShaderProperty(new Vector1ShaderProperty()
+            {
+                overrideReferenceName = string.Format("{0}_Type", name),
+                value = (int)value.mode,
+                generatePropertyBlock = false
+            });
+
+            properties.AddShaderProperty(new Vector1ShaderProperty()
+            {
+                overrideReferenceName = string.Format("{0}_ColorsLength", name),
+                value = value.colorKeys.Length,
+                generatePropertyBlock = false
+            });
+
+            properties.AddShaderProperty(new Vector1ShaderProperty()
+            {
+                overrideReferenceName = string.Format("{0}_AlphasLength", name),
+                value = value.alphaKeys.Length,
+                generatePropertyBlock = false
+            });
+
+            for (int i = 0; i < 8; i++)
+            {
+                properties.AddShaderProperty(new Vector4ShaderProperty()
+                {
+                    overrideReferenceName = string.Format("{0}_ColorKey{1}", name, i),
+                    value = i < value.colorKeys.Length ? GradientUtils.ColorKeyToVector(value.colorKeys[i]) : Vector4.zero,
+                    generatePropertyBlock = false
+                });
+            }
+
+            for (int i = 0; i < 8; i++)
+            {
+                properties.AddShaderProperty(new Vector2ShaderProperty()
+                {
+                    overrideReferenceName = string.Format("{0}_AlphaKey{1}", name, i),
+                    value = i < value.alphaKeys.Length ? GradientUtils.AlphaKeyToVector(value.alphaKeys[i]) : Vector2.zero,
+                    generatePropertyBlock = false
+                });
+            }
+        }
+
         public static bool CheckEquivalency(Gradient A, Gradient B)
         {
             var currentMode = A.mode;

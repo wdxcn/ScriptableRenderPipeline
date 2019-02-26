@@ -192,6 +192,16 @@ namespace UnityEditor.ShaderGraph
                 block.SetFloat(name, m_StructData.booleanValue ? 1 : 0);
             else if (propType == PropertyType.Matrix2 || propType == PropertyType.Matrix3 || propType == PropertyType.Matrix4)
                 block.SetMatrix(name, m_StructData.matrixValue);
+            else if (propType == PropertyType.Gradient)
+            {
+                block.SetFloat(string.Format("{0}_Type", name), (int)m_ClassData.gradientValue.mode);
+                block.SetFloat(string.Format("{0}_ColorsLength", name), m_ClassData.gradientValue.colorKeys.Length);
+                block.SetFloat(string.Format("{0}_AlphasLength", name), m_ClassData.gradientValue.alphaKeys.Length);
+                for (int i = 0; i < 8; i++)
+                    block.SetVector(string.Format("{0}_ColorKey{1}", name, i), i < m_ClassData.gradientValue.colorKeys.Length ? GradientUtils.ColorKeyToVector(m_ClassData.gradientValue.colorKeys[i]) : Vector4.zero);
+                for (int i = 0; i < 8; i++)
+                    block.SetVector(string.Format("{0}_AlphaKey{1}", name, i), i < m_ClassData.gradientValue.alphaKeys.Length ? GradientUtils.AlphaKeyToVector(m_ClassData.gradientValue.alphaKeys[i]) : Vector2.zero);
+            }
         }
     }
 

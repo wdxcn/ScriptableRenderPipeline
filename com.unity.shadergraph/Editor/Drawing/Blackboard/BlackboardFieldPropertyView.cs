@@ -392,7 +392,7 @@ namespace UnityEditor.ShaderGraph.Drawing
                     {
                         m_Graph.owner.RegisterCompleteObjectUndo("Change property value");
                         gradientProperty.value = evt.newValue;
-                        DirtyNodes(ModificationScope.Graph);
+                        DirtyNodes();
                     });
                 AddRow("Default", field);
             }
