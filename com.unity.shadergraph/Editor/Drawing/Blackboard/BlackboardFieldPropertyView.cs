@@ -34,55 +34,58 @@ namespace UnityEditor.ShaderGraph.Drawing
             m_Graph = graph;
             m_Property = property;
 
-            if(property.isExposable)
+            if(!m_Graph.isSubGraph)
             {
-                m_ExposedToogle = new Toggle();
-                m_ExposedToogle.OnToggleChanged(evt =>
+                if(property.isExposable)
                 {
-                    m_Graph.owner.RegisterCompleteObjectUndo("Change Exposed Toggle");
-                    if(m_OnExposedToggle != null)
-                        m_OnExposedToggle();
-                    property.generatePropertyBlock = evt.newValue;
-                    if (property.generatePropertyBlock)
+                    m_ExposedToogle = new Toggle();
+                    m_ExposedToogle.OnToggleChanged(evt =>
                     {
-                        m_BlackboardField.icon = BlackboardProvider.exposedIcon;
-                    }
-                    else
+                        m_Graph.owner.RegisterCompleteObjectUndo("Change Exposed Toggle");
+                        if(m_OnExposedToggle != null)
+                            m_OnExposedToggle();
+                        property.generatePropertyBlock = evt.newValue;
+                        if (property.generatePropertyBlock)
+                        {
+                            m_BlackboardField.icon = BlackboardProvider.exposedIcon;
+                        }
+                        else
+                        {
+                            m_BlackboardField.icon = null;
+                        }
+                        DirtyNodes(ModificationScope.Graph);
+                    });
+                    m_ExposedToogle.value = property.generatePropertyBlock;
+                    AddRow("Exposed", m_ExposedToogle);
+                }
+
+                m_ReferenceNameField = new TextField(512, false, false, ' ');
+                m_ReferenceNameField.styleSheets.Add(Resources.Load<StyleSheet>("Styles/PropertyNameReferenceField"));
+                AddRow("Reference", m_ReferenceNameField);
+                m_ReferenceNameField.value = property.referenceName;
+                m_ReferenceNameField.isDelayed = true;
+                m_ReferenceNameField.RegisterValueChangedCallback(newName =>
                     {
-                        m_BlackboardField.icon = null;
-                    }
-                    DirtyNodes(ModificationScope.Graph);
-                });
-                m_ExposedToogle.value = property.generatePropertyBlock;
-                AddRow("Exposed", m_ExposedToogle);
+                        m_Graph.owner.RegisterCompleteObjectUndo("Change reference name");
+                        if (m_ReferenceNameField.value != m_Property.referenceName)
+                        {
+                            string newReferenceName = m_Graph.SanitizePropertyReferenceName(newName.newValue, property.guid);
+                            property.overrideReferenceName = newReferenceName;
+                        }
+                        m_ReferenceNameField.value = property.referenceName;
+
+                        if (string.IsNullOrEmpty(property.overrideReferenceName))
+                            m_ReferenceNameField.RemoveFromClassList("modified");
+                        else
+                            m_ReferenceNameField.AddToClassList("modified");
+
+                        DirtyNodes(ModificationScope.Graph);
+                        UpdateReferenceNameResetMenu();
+                    });
+
+                if (!string.IsNullOrEmpty(property.overrideReferenceName))
+                    m_ReferenceNameField.AddToClassList("modified");
             }
-
-            m_ReferenceNameField = new TextField(512, false, false, ' ');
-            m_ReferenceNameField.styleSheets.Add(Resources.Load<StyleSheet>("Styles/PropertyNameReferenceField"));
-            AddRow("Reference", m_ReferenceNameField);
-            m_ReferenceNameField.value = property.referenceName;
-            m_ReferenceNameField.isDelayed = true;
-            m_ReferenceNameField.RegisterValueChangedCallback(newName =>
-                {
-                    m_Graph.owner.RegisterCompleteObjectUndo("Change reference name");
-                    if (m_ReferenceNameField.value != m_Property.referenceName)
-                    {
-                        string newReferenceName = m_Graph.SanitizePropertyReferenceName(newName.newValue, property.guid);
-                        property.overrideReferenceName = newReferenceName;
-                    }
-                    m_ReferenceNameField.value = property.referenceName;
-
-                    if (string.IsNullOrEmpty(property.overrideReferenceName))
-                        m_ReferenceNameField.RemoveFromClassList("modified");
-                    else
-                        m_ReferenceNameField.AddToClassList("modified");
-
-                    DirtyNodes(ModificationScope.Graph);
-                    UpdateReferenceNameResetMenu();
-                });
-
-            if (!string.IsNullOrEmpty(property.overrideReferenceName))
-                m_ReferenceNameField.AddToClassList("modified");
 
             if (property is Vector1ShaderProperty)
             {
@@ -136,18 +139,21 @@ namespace UnityEditor.ShaderGraph.Drawing
                         DirtyNodes();
                     });
                 AddRow("Default", colorField);
-                var colorModeField = new EnumField((Enum)colorProperty.colorMode);
-                colorModeField.RegisterValueChangedCallback(evt =>
-                    {
-                        m_Graph.owner.RegisterCompleteObjectUndo("Change Color Mode");
-                        if (colorProperty.colorMode == (ColorMode)evt.newValue)
-                            return;
-                        colorProperty.colorMode = (ColorMode)evt.newValue;
-                        colorField.hdr = colorProperty.colorMode == ColorMode.HDR;
-                        colorField.MarkDirtyRepaint();
-                        DirtyNodes();
-                    });
-                AddRow("Mode", colorModeField);
+                if(!m_Graph.isSubGraph)
+                {
+                    var colorModeField = new EnumField((Enum)colorProperty.colorMode);
+                    colorModeField.RegisterValueChangedCallback(evt =>
+                        {
+                            m_Graph.owner.RegisterCompleteObjectUndo("Change Color Mode");
+                            if (colorProperty.colorMode == (ColorMode)evt.newValue)
+                                return;
+                            colorProperty.colorMode = (ColorMode)evt.newValue;
+                            colorField.hdr = colorProperty.colorMode == ColorMode.HDR;
+                            colorField.MarkDirtyRepaint();
+                            DirtyNodes();
+                        });
+                    AddRow("Mode", colorModeField);
+                }
             }
             else if (property is TextureShaderProperty)
             {
@@ -160,21 +166,24 @@ namespace UnityEditor.ShaderGraph.Drawing
                         DirtyNodes();
                     });
                 AddRow("Default", field);
-                var defaultModeField = new EnumField((Enum)textureProperty.defaultType);
-                defaultModeField.RegisterValueChangedCallback(evt =>
-                    {
-                        m_Graph.owner.RegisterCompleteObjectUndo("Change Texture Mode");
-                        if (textureProperty.defaultType == (TextureShaderProperty.DefaultType)evt.newValue)
-                            return;
-                        textureProperty.defaultType = (TextureShaderProperty.DefaultType)evt.newValue;
-                        DirtyNodes(ModificationScope.Graph);
-                    });
-                void ToggleDefaultModeFieldEnabled()
+                if(!m_Graph.isSubGraph)
                 {
-                    defaultModeField.SetEnabled(!defaultModeField.enabledSelf);
+                    var defaultModeField = new EnumField((Enum)textureProperty.defaultType);
+                    defaultModeField.RegisterValueChangedCallback(evt =>
+                        {
+                            m_Graph.owner.RegisterCompleteObjectUndo("Change Texture Mode");
+                            if (textureProperty.defaultType == (TextureShaderProperty.DefaultType)evt.newValue)
+                                return;
+                            textureProperty.defaultType = (TextureShaderProperty.DefaultType)evt.newValue;
+                            DirtyNodes(ModificationScope.Graph);
+                        });
+                    void ToggleDefaultModeFieldEnabled()
+                    {
+                        defaultModeField.SetEnabled(!defaultModeField.enabledSelf);
+                    }
+                    m_OnExposedToggle += ToggleDefaultModeFieldEnabled;
+                    AddRow("Mode", defaultModeField);
                 }
-                m_OnExposedToggle += ToggleDefaultModeFieldEnabled;
-                AddRow("Mode", defaultModeField);
             }
             else if (property is Texture2DArrayShaderProperty)
             {
@@ -503,18 +512,21 @@ namespace UnityEditor.ShaderGraph.Drawing
                     break;
             }
 
-            var modeField = new EnumField(floatProperty.floatType);
-            modeField.RegisterValueChangedCallback(evt =>
+            if(!m_Graph.isSubGraph)
             {
-                m_Graph.owner.RegisterCompleteObjectUndo("Change Vector1 mode");
-                var value = (FloatType)evt.newValue;
-                floatProperty.floatType = value;
-                if (rows != null)
-                    RemoveElements(rows);
-                BuildVector1PropertyView(floatProperty);
-                this.MarkDirtyRepaint();
-            });
-            rows[1] = CreateRow("Mode", modeField);
+                var modeField = new EnumField(floatProperty.floatType);
+                modeField.RegisterValueChangedCallback(evt =>
+                {
+                    m_Graph.owner.RegisterCompleteObjectUndo("Change Vector1 mode");
+                    var value = (FloatType)evt.newValue;
+                    floatProperty.floatType = value;
+                    if (rows != null)
+                        RemoveElements(rows);
+                    BuildVector1PropertyView(floatProperty);
+                    this.MarkDirtyRepaint();
+                });
+                rows[1] = CreateRow("Mode", modeField);
+            }
 
             if (rows == null)
                 return;
