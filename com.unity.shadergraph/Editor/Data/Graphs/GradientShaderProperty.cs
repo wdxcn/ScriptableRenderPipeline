@@ -153,6 +153,7 @@ namespace UnityEditor.ShaderGraph
                     }
                     s.AppendLine("return g;", true);
                 }
+                s.AppendLine(string.Format("Gradient {0} = Unity{0}();", referenceName));
                 return s.ToString();
             }
             else
@@ -164,8 +165,14 @@ namespace UnityEditor.ShaderGraph
                     GradientUtils.GetGradientDeclaration(value, ref s);
                     s.AppendLine("return g;", true);
                 }
+                s.AppendLine(string.Format("Gradient {0} = Unity{0}();", referenceName));
                 return s.ToString();
             }
+        }
+
+        public override string GetPropertyAsArgumentString()
+        {
+            return "Gradient " + referenceName;
         }
 
         public override PreviewProperty GetPreviewMaterialProperty()

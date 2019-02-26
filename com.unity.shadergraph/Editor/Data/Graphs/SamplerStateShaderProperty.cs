@@ -42,6 +42,13 @@ namespace UnityEditor.ShaderGraph
                 delimiter);
         }
 
+        public override string GetPropertyAsArgumentString()
+        {
+            return string.Format(@"SamplerState {0}_{1}_{2}", referenceName, 
+                Enum.GetName(typeof(TextureSamplerState.FilterMode), value.filter), 
+                Enum.GetName(typeof(TextureSamplerState.WrapMode), value.wrap));
+        }
+
         public override PreviewProperty GetPreviewMaterialProperty()
         {
             return default(PreviewProperty);

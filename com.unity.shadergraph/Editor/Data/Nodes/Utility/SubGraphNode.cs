@@ -228,6 +228,9 @@ namespace UnityEditor.ShaderGraph
                     case PropertyType.Matrix4:
                         slotType = SlotValueType.Matrix4;
                         break;
+                    case PropertyType.SamplerState:
+                        slotType = SlotValueType.SamplerState;
+                        break;
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
@@ -403,7 +406,9 @@ namespace UnityEditor.ShaderGraph
                 // Generate arguments... first INPUTS
                 var arguments = new List<string>();
                 foreach (var prop in referencedGraph.properties)
+                {
                     arguments.Add(string.Format("{0}", prop.GetPropertyAsArgumentString()));
+                }
 
                 // now pass surface inputs
                 arguments.Add(string.Format("{0} IN", graphContext.graphInputStructName));

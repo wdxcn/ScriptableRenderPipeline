@@ -118,6 +118,7 @@ namespace UnityEditor.ShaderGraph
                             }
                             s.AppendLine("return g;", true);
                         }
+                        s.AppendLine(string.Format("Gradient {0} = Unity{0}();", GetVariableNameForNode()));
                     });
             }
             else
@@ -131,6 +132,7 @@ namespace UnityEditor.ShaderGraph
                             GradientUtils.GetGradientDeclaration(gradient, ref s);
                             s.AppendLine("return g;", true);
                         }
+                        s.AppendLine(string.Format("Gradient {0} = Unity{0}();", GetVariableNameForNode()));
                     });
             }
         }

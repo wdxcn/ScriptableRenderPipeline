@@ -24,7 +24,12 @@ namespace UnityEditor.ShaderGraph
 
         public override string GetPropertyDeclarationString(string delimiter = ";")
         {
-            return "float4x4 " + referenceName + " = float4x4(1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)" + delimiter;
+            return "float2x2 " + referenceName + " = float2x2(1, 0, 0, 1)" + delimiter;
+        }
+
+        public override string GetPropertyAsArgumentString()
+        {
+            return "float2x2 " + referenceName;
         }
 
         public override AbstractMaterialNode ToConcreteNode()

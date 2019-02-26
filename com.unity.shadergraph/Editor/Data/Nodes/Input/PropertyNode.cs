@@ -201,7 +201,7 @@ namespace UnityEditor.ShaderGraph
             }
             else if (property is GradientShaderProperty)
             {
-                var result = string.Format("Gradient {1} = Unity{2}();"
+                var result = string.Format("Gradient {1} = {2};"
                         , precision
                         , GetVariableNameForSlot(OutputSlotId)
                         , property.referenceName);

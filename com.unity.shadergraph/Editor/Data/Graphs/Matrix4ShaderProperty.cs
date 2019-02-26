@@ -22,6 +22,11 @@ namespace UnityEditor.ShaderGraph
             get { return true; }
         }
 
+        public override string GetPropertyAsArgumentString()
+        {
+            return "float4x4 " + referenceName;
+        }
+
         public override AbstractMaterialNode ToConcreteNode()
         {
             return new Matrix4Node
