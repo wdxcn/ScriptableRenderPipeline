@@ -358,7 +358,7 @@ namespace UnityEditor.ShaderGraph
             if (referencedGraph == null)
                 return;
 
-            referencedGraph.CollectShaderProperties(visitor, generationMode);
+            referencedGraph.CollectSubgraphProperties(visitor, generationMode);
         }
 
         public override void CollectPreviewMaterialProperties(List<PreviewProperty> properties)
