@@ -511,6 +511,8 @@ namespace UnityEditor.VFX.UI
 
             public const int assetName = 4;
 
+            public const int ui = 5;
+
             public const int destroy = 666;
         }
 
@@ -979,7 +981,7 @@ namespace UnityEditor.VFX.UI
             bool groupNodeChanged = false;
             RecreateUI(ref groupNodeChanged);
 
-            NotifyChange(AnyThing);
+            NotifyChange(Change.ui);
         }
 
         public void NotifyParameterControllerChange()
