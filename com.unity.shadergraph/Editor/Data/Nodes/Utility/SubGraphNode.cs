@@ -438,10 +438,10 @@ namespace UnityEditor.ShaderGraph
                     foreach (var node in nodes.OfType<AbstractMaterialNode>())
                     {
                         if (node is IGeneratesBodyCode)
-                            (node as IGeneratesBodyCode).GenerateNodeCode(bodyGenerator, graphContext, generationMode);
+                            (node as IGeneratesBodyCode).GenerateNodeCode(bodyGenerator, graphContext, GenerationMode.ForReals);
                     }
 
-                    outputNode.RemapOutputs(bodyGenerator, generationMode);
+                    outputNode.RemapOutputs(bodyGenerator, GenerationMode.ForReals);
 
                     s.Append(bodyGenerator.GetShaderString(1));
                 }
