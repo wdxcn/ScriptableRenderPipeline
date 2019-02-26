@@ -266,7 +266,7 @@ namespace UnityEditor.ShaderGraph.Drawing
             if (create)
                 property.displayName = m_Graph.SanitizePropertyName(property.displayName);
 
-            var icon = (property.isExposable && property.generatePropertyBlock) ? exposedIcon : null;
+            var icon = (m_Graph.isSubGraph || (property.isExposable && property.generatePropertyBlock)) ? exposedIcon : null;
             var field = new BlackboardField(icon, property.displayName, property.propertyType.ToString()) { userData = property };
 
             var propertyView = new BlackboardFieldPropertyView(field, m_Graph, property);
