@@ -10,6 +10,7 @@ namespace UnityEditor.ShaderGraph
         public Matrix2ShaderProperty()
         {
             displayName = "Matrix2";
+            value = Matrix4x4.identity;
         }
 
         public override PropertyType propertyType
@@ -29,12 +30,7 @@ namespace UnityEditor.ShaderGraph
 
         public override string GetPropertyDeclarationString(string delimiter = ";")
         {
-            return "float2x2 " + referenceName + " = float2x2(1, 0, 0, 1)" + delimiter;
-        }
-
-        public override string GetPropertyAsArgumentString()
-        {
-            return "float2x2 " + referenceName;
+            return "float2x2 " + referenceName + delimiter;
         }
 
         public override AbstractMaterialNode ToConcreteNode()
