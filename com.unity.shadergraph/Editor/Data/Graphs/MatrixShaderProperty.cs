@@ -20,10 +20,5 @@ namespace UnityEditor.ShaderGraph
         {
             return "float4x4 " + referenceName + delimiter;
         }
-
-        public override PreviewProperty GetPreviewMaterialProperty()
-        {
-            return default(PreviewProperty);
-        }
     }
 }

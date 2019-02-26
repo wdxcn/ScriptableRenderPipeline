@@ -9,7 +9,7 @@ namespace UnityEditor.ShaderGraph
     {
         public Matrix4ShaderProperty()
         {
-            displayName = "Matrix4";
+            displayName = "Matrix4x4";
             value = Matrix4x4.identity;
         }
 
@@ -26,6 +26,15 @@ namespace UnityEditor.ShaderGraph
         public override bool isExposable
         {
             get { return false; }
+        }
+
+        public override PreviewProperty GetPreviewMaterialProperty()
+        {
+            return new PreviewProperty(PropertyType.Matrix4)
+            {
+                name = referenceName,
+                matrixValue = value
+            };
         }
 
         public override AbstractMaterialNode ToConcreteNode()
