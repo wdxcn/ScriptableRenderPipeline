@@ -98,7 +98,7 @@ namespace UnityEditor.ShaderGraph
         {
             if (generationMode.IsPreview())
             {
-                visitor.AddShaderChunk(string.Format("Gradient {0} = {1}", 
+                visitor.AddShaderChunk(string.Format("Gradient {0} = {1};", 
                     GetVariableNameForSlot(outputSlotId), 
                     GradientUtils.GetGradientForPreview(GetVariableNameForNode())));
             }
