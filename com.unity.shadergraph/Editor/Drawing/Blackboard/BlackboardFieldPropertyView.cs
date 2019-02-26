@@ -226,6 +226,176 @@ namespace UnityEditor.ShaderGraph.Drawing
                 field.value = booleanProperty.value;
                 AddRow("Default", field);
             }
+            else if (property is Matrix2ShaderProperty)
+            {
+                var matrix2Property = (Matrix2ShaderProperty)property;
+                var row0Field = new Vector2Field { value = matrix2Property.value.GetRow(0) };
+                row0Field.RegisterValueChangedCallback(evt =>
+                    {
+                        m_Graph.owner.RegisterCompleteObjectUndo("Change property value");
+                        matrix2Property.value = new Matrix4x4
+                        (
+                            evt.newValue, 
+                            matrix2Property.value.GetRow(1),
+                            Vector4.zero,
+                            Vector4.zero
+                        );
+                        DirtyNodes();
+                    });
+                AddRow("Default", row0Field);
+                var row1Field = new Vector2Field { value = matrix2Property.value.GetRow(1) };
+                row1Field.RegisterValueChangedCallback(evt =>
+                    {
+                        m_Graph.owner.RegisterCompleteObjectUndo("Change property value");
+                        matrix2Property.value = new Matrix4x4
+                        (
+                            matrix2Property.value.GetRow(0),
+                            evt.newValue, 
+                            Vector4.zero,
+                            Vector4.zero
+                        );
+                        DirtyNodes();
+                    });
+                AddRow("", row1Field);
+            }
+            else if (property is Matrix3ShaderProperty)
+            {
+                var matrix3Property = (Matrix3ShaderProperty)property;
+                var row0Field = new Vector3Field { value = matrix3Property.value.GetRow(0) };
+                row0Field.RegisterValueChangedCallback(evt =>
+                    {
+                        m_Graph.owner.RegisterCompleteObjectUndo("Change property value");
+                        matrix3Property.value = new Matrix4x4
+                        (
+                            evt.newValue, 
+                            matrix3Property.value.GetRow(1),
+                            matrix3Property.value.GetRow(2),
+                            Vector4.zero
+                        );
+                        DirtyNodes();
+                    });
+                AddRow("Default", row0Field);
+                var row1Field = new Vector3Field { value = matrix3Property.value.GetRow(1) };
+                row1Field.RegisterValueChangedCallback(evt =>
+                    {
+                        m_Graph.owner.RegisterCompleteObjectUndo("Change property value");
+                        matrix3Property.value = new Matrix4x4
+                        (
+                            matrix3Property.value.GetRow(0),
+                            evt.newValue, 
+                            matrix3Property.value.GetRow(2),
+                            Vector4.zero
+                        );
+                        DirtyNodes();
+                    });
+                AddRow("", row1Field);
+                var row2Field = new Vector3Field { value = matrix3Property.value.GetRow(2) };
+                row2Field.RegisterValueChangedCallback(evt =>
+                    {
+                        m_Graph.owner.RegisterCompleteObjectUndo("Change property value");
+                        matrix3Property.value = new Matrix4x4
+                        (
+                            matrix3Property.value.GetRow(0),
+                            matrix3Property.value.GetRow(1),
+                            evt.newValue, 
+                            Vector4.zero
+                        );
+                        DirtyNodes();
+                    });
+                AddRow("", row2Field);
+            }
+            else if (property is Matrix4ShaderProperty)
+            {
+                var matrix4Property = (Matrix4ShaderProperty)property;
+                var row0Field = new Vector4Field { value = matrix4Property.value.GetRow(0) };
+                row0Field.RegisterValueChangedCallback(evt =>
+                    {
+                        m_Graph.owner.RegisterCompleteObjectUndo("Change property value");
+                        matrix4Property.value = new Matrix4x4
+                        (
+                            evt.newValue, 
+                            matrix4Property.value.GetRow(1),
+                            matrix4Property.value.GetRow(2),
+                            matrix4Property.value.GetRow(3)
+                        );
+                        DirtyNodes();
+                    });
+                AddRow("Default", row0Field);
+                var row1Field = new Vector4Field { value = matrix4Property.value.GetRow(1) };
+                row1Field.RegisterValueChangedCallback(evt =>
+                    {
+                        m_Graph.owner.RegisterCompleteObjectUndo("Change property value");
+                        matrix4Property.value = new Matrix4x4
+                        (
+                            matrix4Property.value.GetRow(0),
+                            evt.newValue, 
+                            matrix4Property.value.GetRow(2),
+                            matrix4Property.value.GetRow(3)
+                        );
+                        DirtyNodes();
+                    });
+                AddRow("", row1Field);
+                var row2Field = new Vector4Field { value = matrix4Property.value.GetRow(2) };
+                row2Field.RegisterValueChangedCallback(evt =>
+                    {
+                        m_Graph.owner.RegisterCompleteObjectUndo("Change property value");
+                        matrix4Property.value = new Matrix4x4
+                        (
+                            matrix4Property.value.GetRow(0),
+                            matrix4Property.value.GetRow(1),
+                            evt.newValue, 
+                            matrix4Property.value.GetRow(3)
+                        );
+                        DirtyNodes();
+                    });
+                AddRow("", row2Field);
+                var row3Field = new Vector4Field { value = matrix4Property.value.GetRow(3) };
+                row3Field.RegisterValueChangedCallback(evt =>
+                    {
+                        m_Graph.owner.RegisterCompleteObjectUndo("Change property value");
+                        matrix4Property.value = new Matrix4x4
+                        (
+                            matrix4Property.value.GetRow(0),
+                            matrix4Property.value.GetRow(1),
+                            matrix4Property.value.GetRow(2),
+                            evt.newValue
+                        );
+                        DirtyNodes();
+                    });
+                AddRow("", row3Field);
+            }
+            else if (property is SamplerStateShaderProperty)
+            {
+                var samplerStateProperty = (SamplerStateShaderProperty)property;
+                var filterField = new EnumField(samplerStateProperty.value.filter);
+                filterField.RegisterValueChangedCallback(evt =>
+                    {
+                        m_Graph.owner.RegisterCompleteObjectUndo("Change property value");
+                        samplerStateProperty.value.filter = (TextureSamplerState.FilterMode)evt.newValue;
+                        DirtyNodes(ModificationScope.Graph);
+                    });
+                AddRow("Filter", filterField);
+                var wrapField = new EnumField(samplerStateProperty.value.wrap);
+                wrapField.RegisterValueChangedCallback(evt =>
+                    {
+                        m_Graph.owner.RegisterCompleteObjectUndo("Change property value");
+                        samplerStateProperty.value.wrap = (TextureSamplerState.WrapMode)evt.newValue;
+                        DirtyNodes(ModificationScope.Graph);
+                    });
+                AddRow("Wrap", wrapField);
+            }
+            else if (property is GradientShaderProperty)
+            {
+                var gradientProperty = (GradientShaderProperty)property;
+                var field = new GradientField { value = gradientProperty.value };
+                field.RegisterValueChangedCallback(evt =>
+                    {
+                        m_Graph.owner.RegisterCompleteObjectUndo("Change property value");
+                        gradientProperty.value = evt.newValue;
+                        DirtyNodes(ModificationScope.Graph);
+                    });
+                AddRow("Default", field);
+            }
 //            AddRow("Type", new TextField());
 //            AddRow("Exposed", new Toggle(null));
 //            AddRow("Range", new Toggle(null));
