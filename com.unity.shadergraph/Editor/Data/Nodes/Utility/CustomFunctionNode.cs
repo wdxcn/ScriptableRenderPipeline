@@ -38,6 +38,8 @@ namespace UnityEditor.ShaderGraph
             set => m_FunctionName = value;
         }
 
+        public static string defaultFunctionName => m_DefaultFunctionName;
+
         [SerializeField]
         private string m_FunctionSource = m_DefaultFunctionSource;
 
@@ -49,6 +51,8 @@ namespace UnityEditor.ShaderGraph
             set => m_FunctionSource = value;
         }
 
+        public static string defaultFunctionSource => m_DefaultFunctionSource;
+
         [SerializeField]
         private string m_FunctionBody = m_DefaultFunctionBody;
 
@@ -59,6 +63,8 @@ namespace UnityEditor.ShaderGraph
             get => m_FunctionBody;
             set => m_FunctionBody = value;
         }
+
+        public static string defaultFunctionBody => m_DefaultFunctionBody;
 
         public void GenerateNodeCode(ShaderGenerator visitor, GraphContext graphContext, GenerationMode generationMode)
         {
@@ -181,7 +187,7 @@ namespace UnityEditor.ShaderGraph
             return port.GetDefaultValue(generationMode);
         }
 
-        internal virtual bool IsValidFunction()
+        private bool IsValidFunction()
         {
             bool validFunctionName = !string.IsNullOrEmpty(functionName) && functionName != m_DefaultFunctionName;
 
@@ -194,6 +200,17 @@ namespace UnityEditor.ShaderGraph
             {
                 bool validFunctionSource = !string.IsNullOrEmpty(functionSource) && functionSource != m_DefaultFunctionSource;
                 return validFunctionName & validFunctionSource;
+            }
+        }
+
+        public override void GetSourceAssetDependencies(List<string> paths)
+        {
+            base.GetSourceAssetDependencies(paths);
+            if (sourceType == HlslSourceType.File && IsValidFunction())
+            {
+                paths.Add(functionSource);
+                foreach (var dependencyPath in AssetDatabase.GetDependencies(functionSource))
+                    paths.Add(dependencyPath);
             }
         }
         

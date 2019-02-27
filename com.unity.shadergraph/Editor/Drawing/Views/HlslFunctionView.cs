@@ -44,8 +44,15 @@ namespace UnityEditor.ShaderGraph.Drawing
                 node.owner.owner.RegisterCompleteObjectUndo("Function Change");
                 node.functionName = s.newValue;
             });
+            m_FunctionName.RegisterCallback<FocusInEvent>(s =>
+            {
+                if(node.functionName == CustomFunctionNode.defaultFunctionName)
+                    m_FunctionName.value = "";
+            });
             m_FunctionName.RegisterCallback<FocusOutEvent>(s =>
             {
+                if(node.functionName == "")
+                    m_FunctionName.value = CustomFunctionNode.defaultFunctionName;
                 node.Dirty(ModificationScope.Graph);
             });
 
@@ -55,8 +62,15 @@ namespace UnityEditor.ShaderGraph.Drawing
                 node.owner.owner.RegisterCompleteObjectUndo("Function Change");
                 node.functionSource = s.newValue;
             });
+            m_FunctionSource.RegisterCallback<FocusInEvent>(s =>
+            {
+                if(node.functionSource == CustomFunctionNode.defaultFunctionSource)
+                    m_FunctionSource.value = "";
+            });
             m_FunctionSource.RegisterCallback<FocusOutEvent>(s =>
             {
+                if(node.functionSource == "")
+                    m_FunctionSource.value = CustomFunctionNode.defaultFunctionSource;
                 node.Dirty(ModificationScope.Graph);
             });
 
@@ -66,8 +80,15 @@ namespace UnityEditor.ShaderGraph.Drawing
                 node.owner.owner.RegisterCompleteObjectUndo("Function Change");
                 node.functionBody = s.newValue;
             });
+            m_FunctionBody.RegisterCallback<FocusInEvent>(s =>
+            {
+                if(node.functionBody == CustomFunctionNode.defaultFunctionBody)
+                    m_FunctionBody.value = "";
+            });
             m_FunctionBody.RegisterCallback<FocusOutEvent>(s =>
             {
+                if(node.functionBody == "")
+                    m_FunctionBody.value = CustomFunctionNode.defaultFunctionBody;
                 node.Dirty(ModificationScope.Graph);
             });
 

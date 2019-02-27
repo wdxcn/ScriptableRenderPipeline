@@ -6,14 +6,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [5.6.0] - 2019-XX-XX
 ### Added
-- Added Custom Function node. With this node you can define a custom HLSL function either via string directly in the graph, or via a path to an HLSL include file.
+- Added Custom Function node. Use this node to define a custom HLSL function either via string directly in the graph, or via a path to an HLSL file.
 
 ### Changed
-- Subgraph Output node is now called Outputs.
+- Subgraph Output node is now called Output.
 - Subgraph Output node now supports renaming of ports.
 - Subgraph Output node now supports all port types.
 - Subgraph Output node now supports reordering ports.
-- When converting nodes to a Sub-Graph, the resulting properties and output ports generated in the Sub-Graph are named for their types by default.
+- When you convert nodes to a Sub Graph, Shader Graph generates properties and output ports in the Sub Graph, and now by default, names those resulting properties and output ports based on their types.
 
 ### Fixed
 - Fixed the Transform node, so going from Tangent Space to any other space now works as expected.

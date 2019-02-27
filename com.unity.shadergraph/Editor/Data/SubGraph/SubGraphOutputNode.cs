@@ -56,7 +56,7 @@ namespace UnityEditor.ShaderGraph
             base.ValidateNode();
         }
 
-        public virtual int AddSlot(ConcreteSlotValueType concreteValueType)
+        public int AddSlot(ConcreteSlotValueType concreteValueType)
         {
             var index = this.GetInputSlots<ISlot>().Count() + 1;
             string name = NodeUtils.GetDuplicateSafeNameForSlot(this, concreteValueType.ToString());

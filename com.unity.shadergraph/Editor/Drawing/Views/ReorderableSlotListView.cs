@@ -156,6 +156,8 @@ namespace UnityEditor.ShaderGraph.Drawing
 
         private void AddEntry(ReorderableList list)
         {
+            m_Node.owner.owner.RegisterCompleteObjectUndo("Adding Slot");
+
             // Need to get all current slots to get the next valid ID
             List<MaterialSlot> slots = new List<MaterialSlot>();
             m_Node.GetSlots(slots);
@@ -170,12 +172,13 @@ namespace UnityEditor.ShaderGraph.Drawing
 
             // Select the new slot, then validate the node
             m_SelectedIndex = list.list.Count - 1;
-            m_Node.owner.owner.RegisterCompleteObjectUndo("Adding Slot");
             m_Node.ValidateNode();
         }
 
         private void RemoveEntry(ReorderableList list)
         {
+            m_Node.owner.owner.RegisterCompleteObjectUndo("Removing Slot");
+
             // Remove the slot from the node
             m_SelectedIndex = list.index;
             m_Node.RemoveSlot((int)m_ReorderableList.list[m_SelectedIndex]);
@@ -185,12 +188,13 @@ namespace UnityEditor.ShaderGraph.Drawing
             ReorderableList.defaultBehaviours.DoRemoveButton(list);
 
             // Validate
-            m_Node.owner.owner.RegisterCompleteObjectUndo("Removing Slot");
             m_Node.ValidateNode();
         }
 
         private void ReorderEntries(ReorderableList list)
         {
+            m_Node.owner.owner.RegisterCompleteObjectUndo("Reordering Slots");
+            
             // Get all the current slots
             List<MaterialSlot> slots = new List<MaterialSlot>();
             if(m_SlotType == SlotType.Input)
@@ -213,8 +217,7 @@ namespace UnityEditor.ShaderGraph.Drawing
                 m_Node.AddSlot(currentSlot);
             }
 
-            RecreateList();   
-            m_Node.owner.owner.RegisterCompleteObjectUndo("Reordering Slots");
+            RecreateList();
             m_Node.ValidateNode();
         }
     }
