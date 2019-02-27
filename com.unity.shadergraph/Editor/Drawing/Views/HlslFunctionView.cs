@@ -32,64 +32,70 @@ namespace UnityEditor.ShaderGraph.Drawing
             m_Type = new EnumField(node.sourceType);
             m_Type.RegisterValueChangedCallback(s =>
             {
-                node.owner.owner.RegisterCompleteObjectUndo("Function Change");
-                node.sourceType = (HlslSourceType)s.newValue;
-                Draw(node);
-                node.Dirty(ModificationScope.Graph);
+                if((HlslSourceType)s.newValue != node.sourceType)
+                {
+                    node.owner.owner.RegisterCompleteObjectUndo("Function Change");
+                    node.sourceType = (HlslSourceType)s.newValue;
+                    Draw(node);
+                    node.Dirty(ModificationScope.Graph);
+                }
             });
 
             m_FunctionName = new TextField { value = node.functionName, multiline = false };
-            m_FunctionName.RegisterValueChangedCallback(s =>
-            {
-                node.owner.owner.RegisterCompleteObjectUndo("Function Change");
-                node.functionName = s.newValue;
-            });
             m_FunctionName.RegisterCallback<FocusInEvent>(s =>
             {
-                if(node.functionName == CustomFunctionNode.defaultFunctionName)
+                if(m_FunctionName.value == CustomFunctionNode.defaultFunctionName)
                     m_FunctionName.value = "";
             });
             m_FunctionName.RegisterCallback<FocusOutEvent>(s =>
             {
-                if(node.functionName == "")
+                if(m_FunctionName.value == "")
                     m_FunctionName.value = CustomFunctionNode.defaultFunctionName;
-                node.Dirty(ModificationScope.Graph);
+                    
+                if(m_FunctionName.value != node.functionName)
+                {
+                    node.owner.owner.RegisterCompleteObjectUndo("Function Change");
+                    node.functionName = m_FunctionName.value;
+                    node.Dirty(ModificationScope.Graph);
+                }
             });
 
             m_FunctionSource = new TextField { value = node.functionSource, multiline = false };
-            m_FunctionSource.RegisterValueChangedCallback(s =>
-            {
-                node.owner.owner.RegisterCompleteObjectUndo("Function Change");
-                node.functionSource = s.newValue;
-            });
             m_FunctionSource.RegisterCallback<FocusInEvent>(s =>
             {
-                if(node.functionSource == CustomFunctionNode.defaultFunctionSource)
+                if(m_FunctionSource.value == CustomFunctionNode.defaultFunctionSource)
                     m_FunctionSource.value = "";
             });
             m_FunctionSource.RegisterCallback<FocusOutEvent>(s =>
             {
-                if(node.functionSource == "")
+                if(m_FunctionSource.value == "")
                     m_FunctionSource.value = CustomFunctionNode.defaultFunctionSource;
-                node.Dirty(ModificationScope.Graph);
+
+                if(m_FunctionSource.value != node.functionSource)
+                {
+                    node.owner.owner.RegisterCompleteObjectUndo("Function Change");
+                    node.functionSource = m_FunctionSource.value;
+                    node.Dirty(ModificationScope.Graph);
+                }
             });
 
             m_FunctionBody = new TextField { value = node.functionBody, multiline = true };
-            m_FunctionBody.RegisterValueChangedCallback(s =>
-            {
-                node.owner.owner.RegisterCompleteObjectUndo("Function Change");
-                node.functionBody = s.newValue;
-            });
             m_FunctionBody.RegisterCallback<FocusInEvent>(s =>
             {
-                if(node.functionBody == CustomFunctionNode.defaultFunctionBody)
+                if(m_FunctionBody.value == CustomFunctionNode.defaultFunctionBody)
                     m_FunctionBody.value = "";
             });
             m_FunctionBody.RegisterCallback<FocusOutEvent>(s =>
             {
-                if(node.functionBody == "")
+                if(m_FunctionBody.value  == "")
                     m_FunctionBody.value = CustomFunctionNode.defaultFunctionBody;
-                node.Dirty(ModificationScope.Graph);
+
+                if(m_FunctionBody.value != node.functionBody)
+                {
+                    node.owner.owner.RegisterCompleteObjectUndo("Function Change");
+                    node.functionBody = m_FunctionBody.value;
+                    node.Dirty(ModificationScope.Graph);
+                }
             });
 
             VisualElement typeRow = new VisualElement() { name = "Row" };
