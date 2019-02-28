@@ -34,7 +34,7 @@ namespace UnityEditor.ShaderGraph.Drawing
             {
                 if((HlslSourceType)s.newValue != node.sourceType)
                 {
-                    node.owner.owner.RegisterCompleteObjectUndo("Function Change");
+                    node.owner.owner.RegisterCompleteObjectUndo("Change Function Type");
                     node.sourceType = (HlslSourceType)s.newValue;
                     Draw(node);
                     node.Dirty(ModificationScope.Graph);
@@ -54,7 +54,7 @@ namespace UnityEditor.ShaderGraph.Drawing
                     
                 if(m_FunctionName.value != node.functionName)
                 {
-                    node.owner.owner.RegisterCompleteObjectUndo("Function Change");
+                    node.owner.owner.RegisterCompleteObjectUndo("Change Function Name");
                     node.functionName = m_FunctionName.value;
                     node.Dirty(ModificationScope.Graph);
                 }
@@ -73,7 +73,7 @@ namespace UnityEditor.ShaderGraph.Drawing
 
                 if(m_FunctionSource.value != node.functionSource)
                 {
-                    node.owner.owner.RegisterCompleteObjectUndo("Function Change");
+                    node.owner.owner.RegisterCompleteObjectUndo("Change Function Source");
                     node.functionSource = m_FunctionSource.value;
                     node.Dirty(ModificationScope.Graph);
                 }
@@ -92,7 +92,7 @@ namespace UnityEditor.ShaderGraph.Drawing
 
                 if(m_FunctionBody.value != node.functionBody)
                 {
-                    node.owner.owner.RegisterCompleteObjectUndo("Function Change");
+                    node.owner.owner.RegisterCompleteObjectUndo("Change Function Body");
                     node.functionBody = m_FunctionBody.value;
                     node.Dirty(ModificationScope.Graph);
                 }
