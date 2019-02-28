@@ -156,7 +156,7 @@ namespace UnityEditor.ShaderGraph.Drawing
 
         private void AddEntry(ReorderableList list)
         {
-            m_Node.owner.owner.RegisterCompleteObjectUndo("Adding Slot");
+            m_Node.owner.owner.RegisterCompleteObjectUndo("Add Port");
 
             // Need to get all current slots to get the next valid ID
             List<MaterialSlot> slots = new List<MaterialSlot>();
@@ -177,7 +177,7 @@ namespace UnityEditor.ShaderGraph.Drawing
 
         private void RemoveEntry(ReorderableList list)
         {
-            m_Node.owner.owner.RegisterCompleteObjectUndo("Removing Slot");
+            m_Node.owner.owner.RegisterCompleteObjectUndo("Remove Port");
 
             // Remove the slot from the node
             m_SelectedIndex = list.index;
@@ -193,7 +193,7 @@ namespace UnityEditor.ShaderGraph.Drawing
 
         private void ReorderEntries(ReorderableList list)
         {
-            m_Node.owner.owner.RegisterCompleteObjectUndo("Reordering Slots");
+            m_Node.owner.owner.RegisterCompleteObjectUndo("Reorder Ports");
             
             // Get all the current slots
             List<MaterialSlot> slots = new List<MaterialSlot>();
