@@ -66,7 +66,7 @@ namespace UnityEditor.ShaderGraph.Drawing
                 m_ReferenceNameField.isDelayed = true;
                 m_ReferenceNameField.RegisterValueChangedCallback(newName =>
                     {
-                        m_Graph.owner.RegisterCompleteObjectUndo("Change reference name");
+                        m_Graph.owner.RegisterCompleteObjectUndo("Change Reference Name");
                         if (m_ReferenceNameField.value != m_Property.referenceName)
                         {
                             string newReferenceName = m_Graph.SanitizePropertyReferenceName(newName.newValue, property.guid);
@@ -241,7 +241,7 @@ namespace UnityEditor.ShaderGraph.Drawing
                 var row0Field = new Vector2Field { value = matrix2Property.value.GetRow(0) };
                 row0Field.RegisterValueChangedCallback(evt =>
                     {
-                        m_Graph.owner.RegisterCompleteObjectUndo("Change property value");
+                        m_Graph.owner.RegisterCompleteObjectUndo("Change Property Value");
                         matrix2Property.value = new Matrix4x4
                         (
                             evt.newValue, 
@@ -255,7 +255,7 @@ namespace UnityEditor.ShaderGraph.Drawing
                 var row1Field = new Vector2Field { value = matrix2Property.value.GetRow(1) };
                 row1Field.RegisterValueChangedCallback(evt =>
                     {
-                        m_Graph.owner.RegisterCompleteObjectUndo("Change property value");
+                        m_Graph.owner.RegisterCompleteObjectUndo("Change Property Value");
                         matrix2Property.value = new Matrix4x4
                         (
                             matrix2Property.value.GetRow(0),
@@ -273,7 +273,7 @@ namespace UnityEditor.ShaderGraph.Drawing
                 var row0Field = new Vector3Field { value = matrix3Property.value.GetRow(0) };
                 row0Field.RegisterValueChangedCallback(evt =>
                     {
-                        m_Graph.owner.RegisterCompleteObjectUndo("Change property value");
+                        m_Graph.owner.RegisterCompleteObjectUndo("Change Property Value");
                         matrix3Property.value = new Matrix4x4
                         (
                             evt.newValue, 
@@ -287,7 +287,7 @@ namespace UnityEditor.ShaderGraph.Drawing
                 var row1Field = new Vector3Field { value = matrix3Property.value.GetRow(1) };
                 row1Field.RegisterValueChangedCallback(evt =>
                     {
-                        m_Graph.owner.RegisterCompleteObjectUndo("Change property value");
+                        m_Graph.owner.RegisterCompleteObjectUndo("Change Property Value");
                         matrix3Property.value = new Matrix4x4
                         (
                             matrix3Property.value.GetRow(0),
@@ -301,7 +301,7 @@ namespace UnityEditor.ShaderGraph.Drawing
                 var row2Field = new Vector3Field { value = matrix3Property.value.GetRow(2) };
                 row2Field.RegisterValueChangedCallback(evt =>
                     {
-                        m_Graph.owner.RegisterCompleteObjectUndo("Change property value");
+                        m_Graph.owner.RegisterCompleteObjectUndo("Change Property Value");
                         matrix3Property.value = new Matrix4x4
                         (
                             matrix3Property.value.GetRow(0),
@@ -319,7 +319,7 @@ namespace UnityEditor.ShaderGraph.Drawing
                 var row0Field = new Vector4Field { value = matrix4Property.value.GetRow(0) };
                 row0Field.RegisterValueChangedCallback(evt =>
                     {
-                        m_Graph.owner.RegisterCompleteObjectUndo("Change property value");
+                        m_Graph.owner.RegisterCompleteObjectUndo("Change Property Value");
                         matrix4Property.value = new Matrix4x4
                         (
                             evt.newValue, 
@@ -333,7 +333,7 @@ namespace UnityEditor.ShaderGraph.Drawing
                 var row1Field = new Vector4Field { value = matrix4Property.value.GetRow(1) };
                 row1Field.RegisterValueChangedCallback(evt =>
                     {
-                        m_Graph.owner.RegisterCompleteObjectUndo("Change property value");
+                        m_Graph.owner.RegisterCompleteObjectUndo("Change Property Value");
                         matrix4Property.value = new Matrix4x4
                         (
                             matrix4Property.value.GetRow(0),
@@ -347,7 +347,7 @@ namespace UnityEditor.ShaderGraph.Drawing
                 var row2Field = new Vector4Field { value = matrix4Property.value.GetRow(2) };
                 row2Field.RegisterValueChangedCallback(evt =>
                     {
-                        m_Graph.owner.RegisterCompleteObjectUndo("Change property value");
+                        m_Graph.owner.RegisterCompleteObjectUndo("Change Property Value");
                         matrix4Property.value = new Matrix4x4
                         (
                             matrix4Property.value.GetRow(0),
@@ -361,7 +361,7 @@ namespace UnityEditor.ShaderGraph.Drawing
                 var row3Field = new Vector4Field { value = matrix4Property.value.GetRow(3) };
                 row3Field.RegisterValueChangedCallback(evt =>
                     {
-                        m_Graph.owner.RegisterCompleteObjectUndo("Change property value");
+                        m_Graph.owner.RegisterCompleteObjectUndo("Change Property Value");
                         matrix4Property.value = new Matrix4x4
                         (
                             matrix4Property.value.GetRow(0),
@@ -379,7 +379,7 @@ namespace UnityEditor.ShaderGraph.Drawing
                 var filterField = new EnumField(samplerStateProperty.value.filter);
                 filterField.RegisterValueChangedCallback(evt =>
                     {
-                        m_Graph.owner.RegisterCompleteObjectUndo("Change property value");
+                        m_Graph.owner.RegisterCompleteObjectUndo("Change Property Value");
                         samplerStateProperty.value.filter = (TextureSamplerState.FilterMode)evt.newValue;
                         DirtyNodes(ModificationScope.Graph);
                     });
@@ -387,7 +387,7 @@ namespace UnityEditor.ShaderGraph.Drawing
                 var wrapField = new EnumField(samplerStateProperty.value.wrap);
                 wrapField.RegisterValueChangedCallback(evt =>
                     {
-                        m_Graph.owner.RegisterCompleteObjectUndo("Change property value");
+                        m_Graph.owner.RegisterCompleteObjectUndo("Change Property Value");
                         samplerStateProperty.value.wrap = (TextureSamplerState.WrapMode)evt.newValue;
                         DirtyNodes(ModificationScope.Graph);
                     });
@@ -399,7 +399,7 @@ namespace UnityEditor.ShaderGraph.Drawing
                 var field = new GradientField { value = gradientProperty.value };
                 field.RegisterValueChangedCallback(evt =>
                     {
-                        m_Graph.owner.RegisterCompleteObjectUndo("Change property value");
+                        m_Graph.owner.RegisterCompleteObjectUndo("Change Property Value");
                         gradientProperty.value = evt.newValue;
                         DirtyNodes();
                     });
@@ -441,7 +441,7 @@ namespace UnityEditor.ShaderGraph.Drawing
                         });
                         defaultField.Q("unity-text-input").RegisterCallback<FocusOutEvent>(evt =>
                         {
-                            m_Graph.owner.RegisterCompleteObjectUndo("Change property value");
+                            m_Graph.owner.RegisterCompleteObjectUndo("Change Property Value");
                             float minValue = Mathf.Min(floatProperty.value, floatProperty.rangeValues.x);
                             float maxValue = Mathf.Max(floatProperty.value, floatProperty.rangeValues.y);
                             floatProperty.rangeValues = new Vector2(minValue, maxValue);
@@ -451,7 +451,7 @@ namespace UnityEditor.ShaderGraph.Drawing
                         });
                         minField.RegisterValueChangedCallback(evt =>
                         {
-                            m_Graph.owner.RegisterCompleteObjectUndo("Change Range property minimum");
+                            m_Graph.owner.RegisterCompleteObjectUndo("Change Range Property Minimum");
                             float newValue = (float)evt.newValue;
                             floatProperty.rangeValues = new Vector2(newValue, floatProperty.rangeValues.y);
                             DirtyNodes();
@@ -464,7 +464,7 @@ namespace UnityEditor.ShaderGraph.Drawing
                         });
                         maxField.RegisterValueChangedCallback(evt =>
                         {
-                            m_Graph.owner.RegisterCompleteObjectUndo("Change Range property maximum");
+                            m_Graph.owner.RegisterCompleteObjectUndo("Change Range Property Maximum");
                             float newValue = (float)evt.newValue;
                             floatProperty.rangeValues = new Vector2(floatProperty.rangeValues.x, newValue);
                             DirtyNodes();
@@ -487,7 +487,7 @@ namespace UnityEditor.ShaderGraph.Drawing
                         var defaultField = new IntegerField { value = (int)floatProperty.value };
                         defaultField.RegisterValueChangedCallback(evt =>
                         {
-                            m_Graph.owner.RegisterCompleteObjectUndo("Change property value");
+                            m_Graph.owner.RegisterCompleteObjectUndo("Change Property Value");
                             var value = (int)evt.newValue;
                             floatProperty.value = value;
                             this.MarkDirtyRepaint();
@@ -501,7 +501,7 @@ namespace UnityEditor.ShaderGraph.Drawing
                         var defaultField = new FloatField { value = floatProperty.value };
                         defaultField.RegisterValueChangedCallback(evt =>
                         {
-                            m_Graph.owner.RegisterCompleteObjectUndo("Change property value");
+                            m_Graph.owner.RegisterCompleteObjectUndo("Change Property Value");
                             var value = (float)evt.newValue;
                             floatProperty.value = value;
                             this.MarkDirtyRepaint();
@@ -517,7 +517,7 @@ namespace UnityEditor.ShaderGraph.Drawing
                 var modeField = new EnumField(floatProperty.floatType);
                 modeField.RegisterValueChangedCallback(evt =>
                 {
-                    m_Graph.owner.RegisterCompleteObjectUndo("Change Vector1 mode");
+                    m_Graph.owner.RegisterCompleteObjectUndo("Change Vector1 Mode");
                     var value = (FloatType)evt.newValue;
                     floatProperty.floatType = value;
                     if (rows != null)
@@ -551,7 +551,7 @@ namespace UnityEditor.ShaderGraph.Drawing
 
         void BuildContextualMenu(ContextualMenuPopulateEvent evt)
         {
-            evt.menu.AppendAction("Reset reference", e =>
+            evt.menu.AppendAction("Reset Reference", e =>
                 {
                     m_Property.overrideReferenceName = null;
                     m_ReferenceNameField.value = m_Property.referenceName;
