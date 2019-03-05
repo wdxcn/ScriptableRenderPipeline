@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 - You can now drag normal map type textures on to a Shader Graph to create Sample Texture 2D nodes with the correct type set.
 
+### Fixed
+- Fixed master preview for HDRP master nodes when alpha clip is enabled.
+
 ## [6.4.0] - 2019-02-21
 ### Fixed
 - Fixed the Transform node, so going from Tangent Space to any other space now works as expected.
