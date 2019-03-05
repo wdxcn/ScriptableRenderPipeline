@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 - Terrain detail rendering now works correctly when LWRP is installed but inactive.
+- Fixed the warnings that appear when you create new Unlit Shader Graphs using the Lightweight Render Pipeline.
 
 ## [5.6.0] - 2019-02-21
 
