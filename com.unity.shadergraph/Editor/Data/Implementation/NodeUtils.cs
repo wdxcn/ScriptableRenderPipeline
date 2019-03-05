@@ -276,7 +276,7 @@ namespace UnityEditor.Graphing
                 case ConcreteSlotValueType.Texture3D:
                     return "Texture3D";
                 case ConcreteSlotValueType.Cubemap:
-                    return "Cubemap";
+                    return "TextureCube";
                 case ConcreteSlotValueType.Gradient:
                     return "Gradient";
                 case ConcreteSlotValueType.Matrix2:
