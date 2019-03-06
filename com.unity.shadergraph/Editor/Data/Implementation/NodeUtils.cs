@@ -58,22 +58,13 @@ namespace UnityEditor.Graphing
             return result;
         }
 
-        public static string GetDuplicateSafeNameForSlot(AbstractMaterialNode node, string name)
+        public static string GetDuplicateSafeNameForSlot(AbstractMaterialNode node, int slotId, string name)
         {
             List<MaterialSlot> slots = new List<MaterialSlot>();
             node.GetSlots(slots);
 
-            int duplicateNameCount = 0;
-            foreach(MaterialSlot value in slots)
-            {
-                string rawDisplayName = value.RawDisplayName();
-                if(rawDisplayName.Contains(name))
-                    duplicateNameCount++;
-            }
-            if(duplicateNameCount > 0)
-                name += string.Format(" ({0})", duplicateNameCount);
-
-            return name;
+            name = name.Trim();
+            return GraphUtil.SanitizeName(slots.Where(p => p.id != slotId).Select(p => p.RawDisplayName()), "{0} ({1})", name);
         }
 
         // CollectNodesNodeFeedsInto looks at the current node and calculates
