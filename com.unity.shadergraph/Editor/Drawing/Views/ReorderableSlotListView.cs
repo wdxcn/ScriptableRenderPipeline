@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -95,7 +95,7 @@ namespace UnityEditor.ShaderGraph.Drawing
                 var concreteValueType = (ConcreteSlotValueType)EditorGUI.EnumPopup( new Rect(rect.x + labelWidth, rect.y, rect.width - labelWidth, EditorGUIUtility.singleLineHeight), oldSlot.concreteValueType);
 
                 if(displayName != oldSlot.RawDisplayName())
-                    displayName = NodeUtils.GetDuplicateSafeNameForSlot(m_Node, displayName);
+                    displayName = NodeUtils.GetDuplicateSafeNameForSlot(m_Node, oldSlot.id, displayName);
                 
                 if(EditorGUI.EndChangeCheck())
                 {
@@ -164,7 +164,7 @@ namespace UnityEditor.ShaderGraph.Drawing
             int[] slotIDs = slots.Select(s => s.id).OrderByDescending(s => s).ToArray();
             int newSlotID = slotIDs.Length > 0 ? slotIDs[0] + 1 : 0;
             
-            string name = NodeUtils.GetDuplicateSafeNameForSlot(m_Node, "New");
+            string name = NodeUtils.GetDuplicateSafeNameForSlot(m_Node, newSlotID, "New");
 
             // Create a new slot and add it
             var newSlot = MaterialSlot.CreateMaterialSlot(SlotValueType.Vector1, newSlotID, name, NodeUtils.GetHLSLSafeName(name), m_SlotType, Vector4.zero);

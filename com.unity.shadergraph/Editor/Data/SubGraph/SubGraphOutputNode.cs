@@ -59,7 +59,7 @@ namespace UnityEditor.ShaderGraph
         public int AddSlot(ConcreteSlotValueType concreteValueType)
         {
             var index = this.GetInputSlots<ISlot>().Count() + 1;
-            string name = string.Format("Out_{0}", NodeUtils.GetDuplicateSafeNameForSlot(this, concreteValueType.ToString()));
+            string name = string.Format("Out_{0}", NodeUtils.GetDuplicateSafeNameForSlot(this, index, concreteValueType.ToString()));
             AddSlot(MaterialSlot.CreateMaterialSlot(concreteValueType.ToSlotValueType(), index, name, NodeUtils.GetHLSLSafeName(name), SlotType.Input, Vector4.zero));
             return index;
         }
