@@ -242,13 +242,26 @@ namespace UnityEditor.ShaderGraph.Drawing
                 row0Field.RegisterValueChangedCallback(evt =>
                     {
                         m_Graph.owner.RegisterCompleteObjectUndo("Change Property Value");
-                        matrix2Property.value = new Matrix4x4
-                        (
-                            evt.newValue, 
-                            matrix2Property.value.GetRow(1),
-                            Vector4.zero,
-                            Vector4.zero
-                        );
+                        Vector2 row1 = matrix2Property.value.GetRow(1);
+                        matrix2Property.value = new Matrix4x4()
+                        {
+                            m00 = evt.newValue.x,
+                            m01 = evt.newValue.y,
+                            m02 = 0,
+                            m03 = 0,
+                            m10 = row1.x,
+                            m11 = row1.y,
+                            m12 = 0,
+                            m13 = 0,
+                            m20 = 0,
+                            m21 = 0,
+                            m22 = 0,
+                            m23 = 0,
+                            m30 = 0,
+                            m31 = 0,
+                            m32 = 0,
+                            m33 = 0,
+                        };
                         DirtyNodes();
                     });
                 AddRow("Default", row0Field);
@@ -256,13 +269,26 @@ namespace UnityEditor.ShaderGraph.Drawing
                 row1Field.RegisterValueChangedCallback(evt =>
                     {
                         m_Graph.owner.RegisterCompleteObjectUndo("Change Property Value");
-                        matrix2Property.value = new Matrix4x4
-                        (
-                            matrix2Property.value.GetRow(0),
-                            evt.newValue, 
-                            Vector4.zero,
-                            Vector4.zero
-                        );
+                        Vector2 row0 = matrix2Property.value.GetRow(0);
+                        matrix2Property.value = new Matrix4x4()
+                        {
+                            m00 = row0.x,
+                            m01 = row0.y,
+                            m02 = 0,
+                            m03 = 0,
+                            m10 = evt.newValue.x,
+                            m11 = evt.newValue.y,
+                            m12 = 0,
+                            m13 = 0,
+                            m20 = 0,
+                            m21 = 0,
+                            m22 = 0,
+                            m23 = 0,
+                            m30 = 0,
+                            m31 = 0,
+                            m32 = 0,
+                            m33 = 0,
+                        };
                         DirtyNodes();
                     });
                 AddRow("", row1Field);
@@ -274,13 +300,27 @@ namespace UnityEditor.ShaderGraph.Drawing
                 row0Field.RegisterValueChangedCallback(evt =>
                     {
                         m_Graph.owner.RegisterCompleteObjectUndo("Change Property Value");
-                        matrix3Property.value = new Matrix4x4
-                        (
-                            evt.newValue, 
-                            matrix3Property.value.GetRow(1),
-                            matrix3Property.value.GetRow(2),
-                            Vector4.zero
-                        );
+                        Vector3 row1 = matrix3Property.value.GetRow(1);
+                        Vector3 row2 = matrix3Property.value.GetRow(2);
+                        matrix3Property.value = new Matrix4x4()
+                        {
+                            m00 = evt.newValue.x,
+                            m01 = evt.newValue.y,
+                            m02 = evt.newValue.z,
+                            m03 = 0,
+                            m10 = row1.x,
+                            m11 = row1.y,
+                            m12 = row1.z,
+                            m13 = 0,
+                            m20 = row2.x,
+                            m21 = row2.y,
+                            m22 = row2.z,
+                            m23 = 0,
+                            m30 = 0,
+                            m31 = 0,
+                            m32 = 0,
+                            m33 = 0,
+                        };
                         DirtyNodes();
                     });
                 AddRow("Default", row0Field);
@@ -288,13 +328,27 @@ namespace UnityEditor.ShaderGraph.Drawing
                 row1Field.RegisterValueChangedCallback(evt =>
                     {
                         m_Graph.owner.RegisterCompleteObjectUndo("Change Property Value");
-                        matrix3Property.value = new Matrix4x4
-                        (
-                            matrix3Property.value.GetRow(0),
-                            evt.newValue, 
-                            matrix3Property.value.GetRow(2),
-                            Vector4.zero
-                        );
+                        Vector3 row0 = matrix3Property.value.GetRow(0);
+                        Vector3 row2 = matrix3Property.value.GetRow(2);
+                        matrix3Property.value = new Matrix4x4()
+                        {
+                            m00 = row0.x,
+                            m01 = row0.y,
+                            m02 = row0.z,
+                            m03 = 0,
+                            m10 = evt.newValue.x,
+                            m11 = evt.newValue.y,
+                            m12 = evt.newValue.z,
+                            m13 = 0,
+                            m20 = row2.x,
+                            m21 = row2.y,
+                            m22 = row2.z,
+                            m23 = 0,
+                            m30 = 0,
+                            m31 = 0,
+                            m32 = 0,
+                            m33 = 0,
+                        };
                         DirtyNodes();
                     });
                 AddRow("", row1Field);
@@ -302,13 +356,27 @@ namespace UnityEditor.ShaderGraph.Drawing
                 row2Field.RegisterValueChangedCallback(evt =>
                     {
                         m_Graph.owner.RegisterCompleteObjectUndo("Change Property Value");
-                        matrix3Property.value = new Matrix4x4
-                        (
-                            matrix3Property.value.GetRow(0),
-                            matrix3Property.value.GetRow(1),
-                            evt.newValue, 
-                            Vector4.zero
-                        );
+                        Vector3 row0 = matrix3Property.value.GetRow(0);
+                        Vector3 row1 = matrix3Property.value.GetRow(1);
+                        matrix3Property.value = new Matrix4x4()
+                        {
+                            m00 = row0.x,
+                            m01 = row0.y,
+                            m02 = row0.z,
+                            m03 = 0,
+                            m10 = row1.x,
+                            m11 = row1.y,
+                            m12 = row1.z,
+                            m13 = 0,
+                            m20 = evt.newValue.x,
+                            m21 = evt.newValue.y,
+                            m22 = evt.newValue.z,
+                            m23 = 0,
+                            m30 = 0,
+                            m31 = 0,
+                            m32 = 0,
+                            m33 = 0,
+                        };
                         DirtyNodes();
                     });
                 AddRow("", row2Field);
@@ -320,13 +388,28 @@ namespace UnityEditor.ShaderGraph.Drawing
                 row0Field.RegisterValueChangedCallback(evt =>
                     {
                         m_Graph.owner.RegisterCompleteObjectUndo("Change Property Value");
-                        matrix4Property.value = new Matrix4x4
-                        (
-                            evt.newValue, 
-                            matrix4Property.value.GetRow(1),
-                            matrix4Property.value.GetRow(2),
-                            matrix4Property.value.GetRow(3)
-                        );
+                        Vector4 row1 = matrix4Property.value.GetRow(1);
+                        Vector4 row2 = matrix4Property.value.GetRow(2);
+                        Vector4 row3 = matrix4Property.value.GetRow(3);
+                        matrix4Property.value = new Matrix4x4()
+                        {
+                            m00 = evt.newValue.x,
+                            m01 = evt.newValue.y,
+                            m02 = evt.newValue.z,
+                            m03 = evt.newValue.w,
+                            m10 = row1.x,
+                            m11 = row1.y,
+                            m12 = row1.z,
+                            m13 = row1.w,
+                            m20 = row2.x,
+                            m21 = row2.y,
+                            m22 = row2.z,
+                            m23 = row2.w,
+                            m30 = row3.x,
+                            m31 = row3.y,
+                            m32 = row3.z,
+                            m33 = row3.w,
+                        };
                         DirtyNodes();
                     });
                 AddRow("Default", row0Field);
@@ -334,13 +417,28 @@ namespace UnityEditor.ShaderGraph.Drawing
                 row1Field.RegisterValueChangedCallback(evt =>
                     {
                         m_Graph.owner.RegisterCompleteObjectUndo("Change Property Value");
-                        matrix4Property.value = new Matrix4x4
-                        (
-                            matrix4Property.value.GetRow(0),
-                            evt.newValue, 
-                            matrix4Property.value.GetRow(2),
-                            matrix4Property.value.GetRow(3)
-                        );
+                        Vector4 row0 = matrix4Property.value.GetRow(0);
+                        Vector4 row2 = matrix4Property.value.GetRow(2);
+                        Vector4 row3 = matrix4Property.value.GetRow(3);
+                        matrix4Property.value = new Matrix4x4()
+                        {
+                            m00 = row0.x,
+                            m01 = row0.y,
+                            m02 = row0.z,
+                            m03 = row0.w,
+                            m10 = evt.newValue.x,
+                            m11 = evt.newValue.y,
+                            m12 = evt.newValue.z,
+                            m13 = evt.newValue.w,
+                            m20 = row2.x,
+                            m21 = row2.y,
+                            m22 = row2.z,
+                            m23 = row2.w,
+                            m30 = row3.x,
+                            m31 = row3.y,
+                            m32 = row3.z,
+                            m33 = row3.w,
+                        };
                         DirtyNodes();
                     });
                 AddRow("", row1Field);
@@ -348,13 +446,28 @@ namespace UnityEditor.ShaderGraph.Drawing
                 row2Field.RegisterValueChangedCallback(evt =>
                     {
                         m_Graph.owner.RegisterCompleteObjectUndo("Change Property Value");
-                        matrix4Property.value = new Matrix4x4
-                        (
-                            matrix4Property.value.GetRow(0),
-                            matrix4Property.value.GetRow(1),
-                            evt.newValue, 
-                            matrix4Property.value.GetRow(3)
-                        );
+                        Vector4 row0 = matrix4Property.value.GetRow(0);
+                        Vector4 row1 = matrix4Property.value.GetRow(1);
+                        Vector4 row3 = matrix4Property.value.GetRow(3);
+                        matrix4Property.value = new Matrix4x4()
+                        {
+                            m00 = row0.x,
+                            m01 = row0.y,
+                            m02 = row0.z,
+                            m03 = row0.w,
+                            m10 = row1.x,
+                            m11 = row1.y,
+                            m12 = row1.z,
+                            m13 = row1.w,
+                            m20 = evt.newValue.x,
+                            m21 = evt.newValue.y,
+                            m22 = evt.newValue.z,
+                            m23 = evt.newValue.w,
+                            m30 = row3.x,
+                            m31 = row3.y,
+                            m32 = row3.z,
+                            m33 = row3.w,
+                        };
                         DirtyNodes();
                     });
                 AddRow("", row2Field);
@@ -362,13 +475,28 @@ namespace UnityEditor.ShaderGraph.Drawing
                 row3Field.RegisterValueChangedCallback(evt =>
                     {
                         m_Graph.owner.RegisterCompleteObjectUndo("Change Property Value");
-                        matrix4Property.value = new Matrix4x4
-                        (
-                            matrix4Property.value.GetRow(0),
-                            matrix4Property.value.GetRow(1),
-                            matrix4Property.value.GetRow(2),
-                            evt.newValue
-                        );
+                        Vector4 row0 = matrix4Property.value.GetRow(0);
+                        Vector4 row1 = matrix4Property.value.GetRow(1);
+                        Vector4 row2 = matrix4Property.value.GetRow(2);
+                        matrix4Property.value = new Matrix4x4()
+                        {
+                            m00 = row0.x,
+                            m01 = row0.y,
+                            m02 = row0.z,
+                            m03 = row0.w,
+                            m10 = row1.x,
+                            m11 = row1.y,
+                            m12 = row1.z,
+                            m13 = row1.w,
+                            m20 = row2.x,
+                            m21 = row2.y,
+                            m22 = row2.z,
+                            m23 = row2.w,
+                            m30 = evt.newValue.x,
+                            m31 = evt.newValue.y,
+                            m32 = evt.newValue.z,
+                            m33 = evt.newValue.w,
+                        };
                         DirtyNodes();
                     });
                 AddRow("", row3Field);

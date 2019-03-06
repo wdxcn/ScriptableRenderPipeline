@@ -144,7 +144,28 @@ namespace UnityEditor.ShaderGraph
 
         public AbstractShaderProperty AsShaderProperty()
         {
-            return new Matrix3ShaderProperty { value = new Matrix4x4(row0, row1, row2, Vector4.zero) };
+            return new Matrix3ShaderProperty
+            {
+                value = new Matrix4x4()
+                {
+                    m00 = row0.x,
+                    m01 = row0.y,
+                    m02 = row0.z,
+                    m03 = 0,
+                    m10 = row1.x,
+                    m11 = row1.y,
+                    m12 = row1.z,
+                    m13 = 0,
+                    m20 = row2.x,
+                    m21 = row2.y,
+                    m22 = row2.z,
+                    m23 = 0,
+                    m30 = 0,
+                    m31 = 0,
+                    m32 = 0,
+                    m33 = 0,
+                }
+            };
         }
 
         public int outputSlotId { get { return OutputSlotId; } }
