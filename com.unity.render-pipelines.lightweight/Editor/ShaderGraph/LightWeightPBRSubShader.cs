@@ -402,7 +402,7 @@ namespace UnityEditor.Rendering.LWRP
             // -------------------------------------
             // Combine Graph sections
 
-            graph.AppendLine(shaderProperties.GetPropertiesDeclaration(1));
+            graph.AppendLine(shaderProperties.GetPropertiesDeclaration(1, mode));
 
             graph.AppendLine(vertexDescriptionInputStruct.ToString());
             graph.AppendLine(surfaceDescriptionInputStruct.ToString());

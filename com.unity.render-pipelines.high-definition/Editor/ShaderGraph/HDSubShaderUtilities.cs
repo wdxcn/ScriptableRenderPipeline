@@ -665,7 +665,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             var graph = new ShaderGenerator();
             {
                 graph.AddShaderChunk("// Shared Graph Properties (uniform inputs)");
-                graph.AddShaderChunk(sharedProperties.GetPropertiesDeclaration(1));
+                graph.AddShaderChunk(sharedProperties.GetPropertiesDeclaration(1, mode));
 
                 if (vertexActive)
                 {
