@@ -97,21 +97,18 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
 
             // Let's check all the resources and states to see if we should render the effect
             HDRaytracingEnvironment rtEnvironement = m_RaytracingManager.CurrentEnvironment();
-            BlueNoise blueNoise = m_RaytracingManager.GetBlueNoiseManager();
             RaytracingShader shadowsShader = m_PipelineAsset.renderPipelineResources.shaders.shadowsRaytracing;
             ComputeShader bilateralFilter = m_PipelineAsset.renderPipelineResources.shaders.areaBillateralFilterCS;
-            bool invalidState = rtEnvironement == null || blueNoise == null || !rtEnvironement.raytracedShadows || shadowsShader  == null || bilateralFilter == null || hdCamera.frameSettings.litShaderMode != LitShaderMode.Deferred
-            || m_PipelineResources.textures.owenScrambledTex == null || m_PipelineResources.textures.scramblingTex == null;
-
-            // Try to grab the acceleration structure for the target camera
-            RaytracingAccelerationStructure accelerationStructure = m_RaytracingManager.RequestAccelerationStructure(hdCamera);
+            bool invalidState = rtEnvironement == null || !rtEnvironement.raytracedShadows || hdCamera.frameSettings.litShaderMode != LitShaderMode.Deferred
+                || shadowsShader  == null || bilateralFilter == null
+                || m_PipelineResources.textures.owenScrambledTex == null || m_PipelineResources.textures.scramblingTex == null;
 
             // If invalid state or ray-tracing acceleration structure, we stop right away
-            if (invalidState || accelerationStructure == null)
+            if (invalidState)
                 return false;
 
-            // Fetch the filter kernel
-            m_KernelFilter = bilateralFilter.FindKernel("AreaBilateralShadow");
+            // Grab the acceleration structure for the target camera
+            RaytracingAccelerationStructure accelerationStructure = m_RaytracingManager.RequestAccelerationStructure(rtEnvironement.shadowLayerMask);
 
             // Define the shader pass to use for the reflection pass
             cmd.SetRaytracingShaderPass(shadowsShader, "VisibilityDXR");
@@ -134,7 +131,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
             for(int lightIdx = 0; lightIdx < numLights; ++lightIdx)
             {
                 // If this is not a rectangular area light or it won't have shadows, skip it
-                if(m_LightLoop.m_lightList.lights[lightIdx].lightType != GPULightType.Rectangle || m_LightLoop.m_lightList.lights[lightIdx].shadowIndex == -1) continue;
+                if(m_LightLoop.m_lightList.lights[lightIdx].lightType != GPULightType.Rectangle || m_LightLoop.m_lightList.lights[lightIdx].rayTracedAreaShadowIndex == -1) continue;
                 using (new ProfilingSample(cmd, "Raytrace Area Shadow", CustomSamplerId.RaytracingShadowIntegration.GetSampler()))
                 {
                     LightData currentLight = m_LightLoop.m_lightList.lights[lightIdx];
@@ -167,14 +164,16 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                     cmd.SetRaytracingTextureParam(shadowsShader, m_RayGenShaderName, HDShaderIDs._GBufferTexture[1], m_GbufferManager.GetBuffer(1));
                     cmd.SetRaytracingTextureParam(shadowsShader, m_RayGenShaderName, HDShaderIDs._GBufferTexture[2], m_GbufferManager.GetBuffer(2));
                     cmd.SetRaytracingTextureParam(shadowsShader, m_RayGenShaderName, HDShaderIDs._GBufferTexture[3], m_GbufferManager.GetBuffer(3));
-                    cmd.SetRaytracingIntParam(shadowsShader, HDShaderIDs._RayCountEnabled, m_RaytracingManager.rayCountManager.rayCountEnabled);
-                    cmd.SetRaytracingTextureParam(shadowsShader, m_RayGenShaderName, HDShaderIDs._RayCountTexture, m_RaytracingManager.rayCountManager.rayCountTex);
+                    cmd.SetRaytracingIntParam(shadowsShader, HDShaderIDs._RayCountEnabled, m_RaytracingManager.rayCountManager.RayCountIsEnabled());
+                    cmd.SetRaytracingTextureParam(shadowsShader, m_RayGenShaderName, HDShaderIDs._RayCountTexture, m_RaytracingManager.rayCountManager.rayCountTexture);
 
                     // Set the output textures
                     cmd.SetRaytracingTextureParam(shadowsShader, m_RayGenShaderName, _SNBuffer, m_SNBuffer);
                     cmd.SetRaytracingTextureParam(shadowsShader, m_RayGenShaderName, _UNBuffer, m_UNBuffer);
                     cmd.SetRaytracingTextureParam(shadowsShader, m_RayGenShaderName, _UBuffer, m_UBuffer);
 
+                    // Bind the area cookie textures to the raytracing shader
+                    cmd.SetRaytracingTextureParam(shadowsShader, m_RayGenShaderName, HDShaderIDs._AreaCookieTextures, m_LightLoop.areaLightCookieManager.GetTexCache());
 
                     // Run the shadow evaluation
                     cmd.DispatchRays(shadowsShader, m_RayGenShaderName, (uint)hdCamera.actualWidth, (uint)hdCamera.actualHeight, 1);
@@ -182,6 +181,9 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
 
                 using (new ProfilingSample(cmd, "Combine Area Shadow", CustomSamplerId.RaytracingShadowCombination.GetSampler()))
                 {
+                    // Fetch the filter kernel
+                    m_KernelFilter = bilateralFilter.FindKernel("AreaBilateralShadow");
+
                     // Inject all the parameters for the compute
                     cmd.SetComputeTextureParam(bilateralFilter, m_KernelFilter, _SNBuffer, m_SNBuffer);
                     cmd.SetComputeTextureParam(bilateralFilter, m_KernelFilter, _UNBuffer, m_UNBuffer);
@@ -189,7 +191,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                     cmd.SetComputeTextureParam(bilateralFilter, m_KernelFilter, HDShaderIDs._NormalBufferTexture, m_SharedRTManager.GetNormalBuffer());
                     cmd.SetComputeIntParam(bilateralFilter, _DenoiseRadius, rtEnvironement.shadowFilterRadius);
                     cmd.SetComputeFloatParam(bilateralFilter, _GaussianSigma, rtEnvironement.shadowFilterSigma);
-                    cmd.SetComputeIntParam(bilateralFilter, HDShaderIDs._RaytracingShadowSlot, m_LightLoop.m_lightList.lights[lightIdx].shadowIndex);
+                    cmd.SetComputeIntParam(bilateralFilter, HDShaderIDs._RaytracingShadowSlot, m_LightLoop.m_lightList.lights[lightIdx].rayTracedAreaShadowIndex);
 
                     // Set the output slot
                     cmd.SetComputeTextureParam(bilateralFilter, m_KernelFilter, HDShaderIDs._AreaShadowTextureRW, m_AreaShadowTextureArray);

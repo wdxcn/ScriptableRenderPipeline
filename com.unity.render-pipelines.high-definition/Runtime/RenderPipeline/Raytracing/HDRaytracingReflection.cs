@@ -78,16 +78,18 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
             BlueNoise blueNoise = m_RaytracingManager.GetBlueNoiseManager();
             ComputeShader bilateralFilter = m_PipelineAsset.renderPipelineResources.shaders.reflectionBilateralFilterCS;
             RaytracingShader reflectionShader = m_PipelineAsset.renderPipelineResources.shaders.reflectionRaytracing;
-            bool missingResources = rtEnvironement == null || blueNoise == null || bilateralFilter == null || reflectionShader == null 
-                                    || m_PipelineResources.textures.owenScrambledTex == null || m_PipelineResources.textures.scramblingTex == null;
 
-            // Try to grab the acceleration structure and the list of HD lights for the target camera
-            RaytracingAccelerationStructure accelerationStructure = m_RaytracingManager.RequestAccelerationStructure(hdCamera);
-            HDRaytracingLightCluster lightCluster = m_RaytracingManager.RequestLightCluster(hdCamera);
+            bool invalidState = rtEnvironement == null || blueNoise == null
+                || bilateralFilter == null || reflectionShader == null 
+                || m_PipelineResources.textures.owenScrambledTex == null || m_PipelineResources.textures.scramblingTex == null;
 
             // If no acceleration structure available, end it now
-            if (accelerationStructure == null || lightCluster == null || missingResources)
+            if (invalidState)
                 return;
+
+            // Grab the acceleration structures and the light cluster to use
+            RaytracingAccelerationStructure accelerationStructure = m_RaytracingManager.RequestAccelerationStructure(rtEnvironement.reflLayerMask);
+            HDRaytracingLightCluster lightCluster = m_RaytracingManager.RequestLightCluster(rtEnvironement.reflLayerMask);
 
             // Compute the actual resolution that is needed base on the quality
             string targetRayGen = "";
@@ -134,8 +136,8 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
             cmd.SetRaytracingTextureParam(reflectionShader, targetRayGen, HDShaderIDs._NormalBufferTexture, m_SharedRTManager.GetNormalBuffer());
 
             // Set ray count tex
-            cmd.SetRaytracingIntParam(reflectionShader, HDShaderIDs._RayCountEnabled, m_RaytracingManager.rayCountManager.rayCountEnabled);
-            cmd.SetRaytracingTextureParam(reflectionShader, targetRayGen, HDShaderIDs._RayCountTexture, m_RaytracingManager.rayCountManager.rayCountTex);
+            cmd.SetRaytracingIntParam(reflectionShader, HDShaderIDs._RayCountEnabled, m_RaytracingManager.rayCountManager.RayCountIsEnabled());
+            cmd.SetRaytracingTextureParam(reflectionShader, targetRayGen, HDShaderIDs._RayCountTexture, m_RaytracingManager.rayCountManager.rayCountTexture);
 
             // Compute the pixel spread value
             float pixelSpreadAngle = Mathf.Atan(2.0f * Mathf.Tan(hdCamera.camera.fieldOfView * Mathf.PI / 360.0f) / Mathf.Min(hdCamera.actualWidth, hdCamera.actualHeight));
@@ -175,8 +177,14 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                 break;
             }
 
+            // Force to disable specular lighting
+            cmd.SetGlobalInt(HDShaderIDs._EnableSpecularLighting, 0);
+
             // Run the calculus
             cmd.DispatchRays(reflectionShader, targetRayGen, widthResolution, heightResolution, 1);
+
+            // Restore the previous state of specular lighting
+            cmd.SetGlobalInt(HDShaderIDs._EnableSpecularLighting, hdCamera.frameSettings.IsEnabled(FrameSettingsField.SpecularLighting) ? 0 : 1);
 
             using (new ProfilingSample(cmd, "Filter Reflection", CustomSamplerId.RaytracingFilterReflection.GetSampler()))
             {
