@@ -195,6 +195,9 @@ namespace UnityEditor.ShaderGraph.Drawing
             foreach (var node in m_Graph.removedNodes)
             {
                 DestroyPreview(node.tempId);
+                m_NodesToUpdate.Remove(node);
+                m_NodesToDraw.Remove(node);
+                m_RefreshTimedNodes = true;
             }
 
             m_Messenger.ClearNodesFromProvider(this, m_Graph.removedNodes);
@@ -202,6 +205,7 @@ namespace UnityEditor.ShaderGraph.Drawing
             foreach (var node in m_Graph.addedNodes)
             {
                 AddPreview(node);
+                m_RefreshTimedNodes = true;
             }
 
             foreach (var edge in m_Graph.removedEdges)
