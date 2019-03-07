@@ -88,6 +88,7 @@ namespace UnityEditor.ShaderGraph.Drawing
             m_MessageManager = messageManager;
             styleSheets.Add(Resources.Load<StyleSheet>("Styles/GraphEditorView"));
             previewManager = new PreviewManager(graph, messageManager);
+            previewManager.onPrimaryMasterChanged = OnPrimaryMasterChanged;
 
             string serializedToggle = EditorUserSettings.GetConfigValue(k_ToggleSettings);
             if (!string.IsNullOrEmpty(serializedToggle))
@@ -166,17 +167,7 @@ namespace UnityEditor.ShaderGraph.Drawing
                 }
                 m_BlackboardProvider.blackboard.visible = m_ToggleSettings.isBlackboardVisible;
 
-                m_MasterPreviewView = new MasterPreviewView(previewManager, graph) { name = "masterPreview" };
-
-                WindowDraggable masterPreviewViewDraggable = new WindowDraggable(null, this);
-                m_MasterPreviewView.AddManipulator(masterPreviewViewDraggable);
-                m_GraphView.Add(m_MasterPreviewView);
-
-                //m_BlackboardProvider.onDragFinished += UpdateSerializedWindowLayout;
-                //m_BlackboardProvider.onResizeFinished += UpdateSerializedWindowLayout;
-                masterPreviewViewDraggable.OnDragFinished += UpdateSerializedWindowLayout;
-                m_MasterPreviewView.previewResizeBorderFrame.OnResizeFinished += UpdateSerializedWindowLayout;
-                m_MasterPreviewView.visible = m_ToggleSettings.isPreviewVisible;
+                CreateMasterPreview();
 
                 m_GraphView.graphViewChanged = GraphViewChanged;
 
@@ -205,6 +196,19 @@ namespace UnityEditor.ShaderGraph.Drawing
                 AddEdge(edge);
 
             Add(content);
+        }
+
+        void CreateMasterPreview()
+        {
+            m_MasterPreviewView = new MasterPreviewView(previewManager, m_Graph) {name = "masterPreview"};
+
+            var masterPreviewViewDraggable = new WindowDraggable(null, this);
+            m_MasterPreviewView.AddManipulator(masterPreviewViewDraggable);
+            m_GraphView.Add(m_MasterPreviewView);
+
+            masterPreviewViewDraggable.OnDragFinished += UpdateSerializedWindowLayout;
+            m_MasterPreviewView.previewResizeBorderFrame.OnResizeFinished += UpdateSerializedWindowLayout;
+            m_MasterPreviewView.visible = m_ToggleSettings.isPreviewVisible;
         }
 
         void OnSpaceDown(KeyDownEvent evt)
@@ -686,6 +690,12 @@ namespace UnityEditor.ShaderGraph.Drawing
                     }
                 }
             }
+        }
+
+        void OnPrimaryMasterChanged()
+        {
+            m_MasterPreviewView.RemoveFromHierarchy();
+            CreateMasterPreview();
         }
 
         void HandleEditorViewChanged(GeometryChangedEvent evt)

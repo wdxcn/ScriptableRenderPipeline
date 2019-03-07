@@ -13,6 +13,8 @@ using Object = UnityEngine.Object;
 
 namespace UnityEditor.ShaderGraph.Drawing
 {
+    delegate void OnPrimaryMasterChanged();
+
     class PreviewManager : IDisposable
     {
         GraphData m_Graph;
@@ -40,16 +42,12 @@ namespace UnityEditor.ShaderGraph.Drawing
             m_Messenger = messenger;
             m_ErrorTexture = GenerateFourSquare(Color.magenta, Color.black);
             m_SceneResources = new PreviewSceneResources();
-            m_MasterRenderData = new PreviewRenderData
-            {
-                renderTexture = new RenderTexture(400, 400, 16, RenderTextureFormat.ARGB32,
-                    RenderTextureReadWrite.Default) {hideFlags = HideFlags.HideAndDontSave}
-            };
-            m_MasterRenderData.renderTexture.Create();
 
             foreach (var node in m_Graph.GetNodes<AbstractMaterialNode>())
                 AddPreview(node);
         }
+
+        public OnPrimaryMasterChanged onPrimaryMasterChanged;
 
         static Texture2D GenerateFourSquare(Color c1, Color c2)
         {
@@ -75,6 +73,23 @@ namespace UnityEditor.ShaderGraph.Drawing
 
         void AddPreview(AbstractMaterialNode node)
         {
+            var renderData = new PreviewRenderData
+            {
+                renderTexture =
+                    new RenderTexture(200, 200, 16, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Default)
+                    {
+                        hideFlags = HideFlags.HideAndDontSave
+                    }
+            };
+
+            if (masterRenderData == null && (node is IMasterNode || node is SubGraphOutputNode))
+            {
+                m_MasterRenderData = renderData;
+                renderData.renderTexture.width = renderData.renderTexture.height = 400;
+            }
+
+            renderData.renderTexture.Create();
+            
             var shaderData = new PreviewShaderData
             {
                 node = node,
@@ -84,26 +99,8 @@ namespace UnityEditor.ShaderGraph.Drawing
             };
             shaderData.shader.hideFlags = HideFlags.HideAndDontSave;
             shaderData.mat = new Material(shaderData.shader) {hideFlags = HideFlags.HideAndDontSave};
-            
-            PreviewRenderData renderData;
-            if (masterRenderData.shaderData == null &&
-                (node is IMasterNode || node is SubGraphOutputNode))
-            {
-                renderData = masterRenderData;
-            }
-            else
-            {
-                renderData = new PreviewRenderData
-                {
-                    renderTexture =
-                        new RenderTexture(200, 200, 16, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Default)
-                        {
-                            hideFlags = HideFlags.HideAndDontSave
-                        }
-                };
-                renderData.renderTexture.Create();
-            }
             renderData.shaderData = shaderData;
+
             Set(m_Identifiers, node.tempId, node.tempId);
             Set(m_RenderDatas, node.tempId, renderData);
             node.RegisterCallback(OnNodeModified);
@@ -320,7 +317,7 @@ namespace UnityEditor.ShaderGraph.Drawing
             foreach (var renderData in m_RenderList3D)
                 RenderPreview(renderData, m_SceneResources.sphere, Matrix4x4.identity);
 
-            var renderMasterPreview = masterRenderData.shaderData != null;
+            var renderMasterPreview = masterRenderData != null;
             if (renderMasterPreview)
             {
                 CollectShaderProperties(masterRenderData.shaderData.node, masterRenderData);
@@ -370,6 +367,7 @@ namespace UnityEditor.ShaderGraph.Drawing
 
         void UpdateShaders()
         {
+            // Check for shaders that finished compiling and set them to redraw
             foreach (var renderData in m_RenderDatas)
             {
                 if (renderData != null && renderData.shaderData.isCompiling &&
@@ -440,7 +438,7 @@ namespace UnityEditor.ShaderGraph.Drawing
         void RenderPreview(PreviewRenderData renderData, Mesh mesh, Matrix4x4 transform)
         {
             var node = renderData.shaderData.node;
-            Assert.IsTrue((node != null && node.hasPreview && node.previewExpanded) || node == masterRenderData.shaderData?.node);
+            Assert.IsTrue((node != null && node.hasPreview && node.previewExpanded) || node == masterRenderData?.shaderData?.node);
             
             if (renderData.shaderData.hasError)
             {
@@ -534,17 +532,20 @@ namespace UnityEditor.ShaderGraph.Drawing
         void DestroyPreview(Identifier nodeId)
         {
             var renderData = Get(m_RenderDatas, nodeId);
-            if (renderData != null)
+            // Check if we're destroying the shader data used by the master preview
+            if (masterRenderData == renderData)
             {
-                // Check if we're destroying the shader data used by the master preview
-                if (masterRenderData != null && masterRenderData.shaderData != null && masterRenderData.shaderData == renderData.shaderData)
-                    masterRenderData.shaderData = m_RenderDatas.Where(x => x != null && x.shaderData.node is IMasterNode && x != renderData).Select(x => x.shaderData).FirstOrDefault();
-
-                DestroyRenderData(renderData);
-
-                Set(m_RenderDatas, nodeId, null);
-                Set(m_Identifiers, nodeId, default(Identifier));
+                m_MasterRenderData =
+                    m_RenderDatas.FirstOrDefault(x => x?.shaderData.node is IMasterNode && x != renderData);
+                ResizeMasterPreview(new Vector2(400, 400));
+                if (onPrimaryMasterChanged != null)
+                    onPrimaryMasterChanged();
             }
+
+            DestroyRenderData(renderData);
+
+            Set(m_RenderDatas, nodeId, null);
+            Set(m_Identifiers, nodeId, default(Identifier));
         }
 
         void ReleaseUnmanagedResources()
@@ -559,8 +560,6 @@ namespace UnityEditor.ShaderGraph.Drawing
                 m_SceneResources.Dispose();
                 m_SceneResources = null;
             }
-            if (m_MasterRenderData != null)
-                DestroyRenderData(m_MasterRenderData);
             foreach (var renderData in m_RenderDatas.Where(x => x != null))
                 DestroyRenderData(renderData);
             m_RenderDatas.Clear();
