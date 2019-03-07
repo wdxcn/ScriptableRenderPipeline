@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 - Removed Blackboard fields, which had no effect on Sub Graph input ports, from the Sub Graph Blackboard.
 
+### Fixed
+- Fixed master preview for HDRP master nodes when alpha clip is enabled.
+
 ## [6.4.0] - 2019-02-21
 ### Fixed
 - Fixed the Transform node, so going from Tangent Space to any other space now works as expected.
