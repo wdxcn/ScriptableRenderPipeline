@@ -110,6 +110,7 @@ namespace UnityEditor.ShaderGraph
         {
             var index = this.GetInputSlots<ISlot>().Count() + 1;
             AddSlot(new Vector4MaterialSlot(index, "Output " + index, "Output" + index, SlotType.Input, Vector4.zero));
+            Dirty(ModificationScope.Topological);
             return index;
         }
 
@@ -120,6 +121,7 @@ namespace UnityEditor.ShaderGraph
                 return;
 
             RemoveSlot(index);
+            Dirty(ModificationScope.Topological);
         }
 
         public void RemapOutputs(ShaderGenerator visitor, GenerationMode generationMode)

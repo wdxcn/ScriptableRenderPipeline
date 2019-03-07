@@ -406,6 +406,7 @@ namespace UnityEditor.ShaderGraph.Drawing
                 var results = m_Graph.GetPreviewShader(node);
 
                 var renderData = GetRenderData(node.tempId);
+                ShaderUtil.ClearCachedData(renderData.shaderData.shader);
                 // Always explicitly use pass 0 for preview shaders
                 BeginCompile(renderData, results.shader, 0);
             }

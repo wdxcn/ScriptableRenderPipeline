@@ -834,6 +834,7 @@ namespace UnityEditor.ShaderGraph
             }
             else
             {
+                // Until we have a better error system, give them something
                 pixelShaderSurfaceRemap.AppendLine("return No_Slots_Found_For_Preview");
             }
 
