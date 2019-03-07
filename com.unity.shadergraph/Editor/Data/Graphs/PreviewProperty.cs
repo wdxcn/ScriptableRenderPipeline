@@ -158,28 +158,28 @@ namespace UnityEditor.ShaderGraph
         const string k_SetErrorMessage = "Cannot set a {0} property on a PreviewProperty with type {1}.";
         const string k_GetErrorMessage = "Cannot get a {0} property on a PreviewProperty with type {1}.";
 
-        public void SetMaterialPropertyBlockValue(MaterialPropertyBlock block)
+        public void SetMaterialPropertyBlockValue(Material mat)
         {
             if ((propType == PropertyType.Texture2D || propType == PropertyType.Texture2DArray || propType == PropertyType.Texture3D) && textureValue != null)
-                block.SetTexture(name, m_ClassData.textureValue);
+                mat.SetTexture(name, m_ClassData.textureValue);
             else if (propType == PropertyType.Cubemap && cubemapValue != null)
-                block.SetTexture(name, m_ClassData.cubemapValue);
+                mat.SetTexture(name, m_ClassData.cubemapValue);
             else if (propType == PropertyType.Color)
-                block.SetColor(name, m_StructData.colorValue);
+                mat.SetColor(name, m_StructData.colorValue);
             else if (propType == PropertyType.Vector2 || propType == PropertyType.Vector3 || propType == PropertyType.Vector4)
-                block.SetVector(name, m_StructData.vector4Value);
+                mat.SetVector(name, m_StructData.vector4Value);
             else if (propType == PropertyType.Vector1)
-                block.SetFloat(name, m_StructData.floatValue);
+                mat.SetFloat(name, m_StructData.floatValue);
             else if (propType == PropertyType.Boolean)
-                block.SetFloat(name, m_StructData.booleanValue ? 1 : 0);
+                mat.SetFloat(name, m_StructData.booleanValue ? 1 : 0);
         }
     }
 
     static class PreviewPropertyExtensions
     {
-        public static void SetPreviewProperty(this MaterialPropertyBlock block, PreviewProperty previewProperty)
+        public static void SetPreviewProperty(this Material mat, PreviewProperty previewProperty)
         {
-            previewProperty.SetMaterialPropertyBlockValue(block);
+            previewProperty.SetMaterialPropertyBlockValue(mat);
         }
     }
 }

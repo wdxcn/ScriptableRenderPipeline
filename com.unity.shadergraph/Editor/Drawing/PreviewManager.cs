@@ -84,7 +84,6 @@ namespace UnityEditor.ShaderGraph.Drawing
             };
             shaderData.shader.hideFlags = HideFlags.HideAndDontSave;
             shaderData.mat = new Material(shaderData.shader) {hideFlags = HideFlags.HideAndDontSave};
-            shaderData.props = new MaterialPropertyBlock();
             
             PreviewRenderData renderData;
             if (masterRenderData.shaderData == null &&
@@ -235,7 +234,6 @@ namespace UnityEditor.ShaderGraph.Drawing
         {
             m_PreviewProperties.Clear();
             m_PropertyNodes.Clear();
-            renderData.shaderData.props.Clear();
 
             m_PropertyNodes.Add(node);
             PropagateNodeList(m_PropertyNodes, PropagationDirection.Upstream);
@@ -249,7 +247,7 @@ namespace UnityEditor.ShaderGraph.Drawing
                 m_PreviewProperties.Add(prop.GetPreviewMaterialProperty());
 
             foreach (var previewProperty in m_PreviewProperties)
-                renderData.shaderData.props.SetPreviewProperty(previewProperty);
+                renderData.shaderData.mat.SetPreviewProperty(previewProperty);
         }
 
         List<PreviewRenderData> m_RenderList2D = new List<PreviewRenderData>();
@@ -458,7 +456,7 @@ namespace UnityEditor.ShaderGraph.Drawing
             Graphics.Blit(Texture2D.whiteTexture, temp, m_SceneResources.checkerboardMaterial);
 
             m_SceneResources.camera.targetTexture = temp;
-            Graphics.DrawMesh(mesh, transform, renderData.shaderData.mat, 1, m_SceneResources.camera, 0, renderData.shaderData.props, ShadowCastingMode.Off, false, null, false);
+            Graphics.DrawMesh(mesh, transform, renderData.shaderData.mat, 1, m_SceneResources.camera, 0, null, ShadowCastingMode.Off, false, null, false);
 
             var previousUseSRP = Unsupported.useScriptableRenderPipeline;
             Unsupported.useScriptableRenderPipeline = renderData.shaderData.node is IMasterNode;
@@ -666,7 +664,6 @@ Shader ""hidden/preview""
         public AbstractMaterialNode node { get; set; }
         public Shader shader { get; set; }
         public Material mat { get; set; }
-        public MaterialPropertyBlock props { get; set; }
         public string shaderString { get; set; }
         public bool isCompiling { get; set; }
         public bool hasError { get; set; }
