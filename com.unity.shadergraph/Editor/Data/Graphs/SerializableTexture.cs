@@ -39,6 +39,10 @@ namespace UnityEditor.ShaderGraph
                 {
                     m_Texture = AssetDatabase.LoadAssetAtPath<Texture>(AssetDatabase.GUIDToAssetPath(m_Guid));
                 }
+                else if (m_Texture == null)
+                {
+                    m_Texture = EditorGUIUtility.whiteTexture;
+                }
 
                 return m_Texture;
             }

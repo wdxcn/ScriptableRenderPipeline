@@ -61,9 +61,10 @@ namespace UnityEditor.ShaderGraph
             var index = this.GetInputSlots<ISlot>().Count() + 1;
             string name = string.Format("Out_{0}", NodeUtils.GetDuplicateSafeNameForSlot(this, index, concreteValueType.ToString()));
             AddSlot(MaterialSlot.CreateMaterialSlot(concreteValueType.ToSlotValueType(), index, name, NodeUtils.GetHLSLSafeName(name), SlotType.Input, Vector4.zero));
+            Dirty(ModificationScope.Topological);
             return index;
         }
-
+        
         public void RemapOutputs(ShaderGenerator visitor, GenerationMode generationMode)
         {
             foreach (var slot in graphOutputs)

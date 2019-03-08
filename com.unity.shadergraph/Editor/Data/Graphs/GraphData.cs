@@ -552,7 +552,6 @@ namespace UnityEditor.ShaderGraph
             var node = GetNodeFromGuid(s.nodeGuid);
             if (node == null)
             {
-                Debug.LogWarning("Node does not exist");
                 return;
             }
             ISlot slot = node.FindSlot<ISlot>(s.slotId);

@@ -618,7 +618,7 @@ namespace UnityEditor.ShaderGraph.Drawing
                             m_Graph.owner.RegisterCompleteObjectUndo("Change Property Value");
                             var value = (int)evt.newValue;
                             floatProperty.value = value;
-                            this.MarkDirtyRepaint();
+                            DirtyNodes();
                         });
                         rows = new VisualElement[2];
                         rows[0] = CreateRow("Default", defaultField);
@@ -632,7 +632,7 @@ namespace UnityEditor.ShaderGraph.Drawing
                             m_Graph.owner.RegisterCompleteObjectUndo("Change Property Value");
                             var value = (float)evt.newValue;
                             floatProperty.value = value;
-                            this.MarkDirtyRepaint();
+                            DirtyNodes();
                         });
                         rows = new VisualElement[2];
                         rows[0] = CreateRow("Default", defaultField);
