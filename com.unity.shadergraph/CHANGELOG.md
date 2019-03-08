@@ -4,8 +4,19 @@ All notable changes to this package are documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [6.5.0] - 2019-XX-XX
-- Fixed an issue where IsFaceSign would not compile within SubGraph Nodes.
+## [6.6.0] - 2019-XX-XX
+### Fixed
+- You can now undo edits to Vector port default input fields.
+- You can now undo edits to Gradient port default input fields.
+- Boolean port input fields now display correct values when you undo changes.
+- Vector type properties now behave as expected when you undo changes.
+- Fixed an error that previously occurred when you opened saved Shader Graphs containing one or more Voronoi nodes.
+- You can now drag normal map type textures on to a Shader Graph to create Sample Texture 2D nodes with the correct type set.
+- Fixed the Multiply node so default input values are applied correctly.
+- Added padding on input values for Blend node to prevent NaN outputs.
+- Fixed an issue where `IsFaceSign` would not compile within Sub Graph Nodes.
+
+## [6.5.0] - 2019-03-07
 
 ### Fixed
 - Fixed master preview for HDRP master nodes when alpha clip is enabled.
