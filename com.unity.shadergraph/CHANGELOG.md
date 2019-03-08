@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - You can now drag normal map type textures on to a Shader Graph to create Sample Texture 2D nodes with the correct type set.
 - Fixed the Multiply node so default input values are applied correctly.
 - Added padding on input values for Blend node to prevent NaN outputs.
+- Null reference errors no longer occur when you remove ports with connected edges.
 
 ## [6.5.0] - 2019-03-07
 
@@ -23,7 +24,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [6.4.0] - 2019-02-21
 ### Fixed
 - Fixed the Transform node, so going from Tangent Space to any other space now works as expected.
-- Null reference errors no longer occur when you remove ports with connected edges.
 
 ## [6.3.0] - 2019-02-18
 ### Fixed
