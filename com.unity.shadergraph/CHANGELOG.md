@@ -10,7 +10,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - You can now drag normal map type textures on to a Shader Graph to create Sample Texture 2D nodes with the correct type set.
 - Fixed the Multiply node so default input values are applied correctly.
 - Fixed an issue where IsFaceSign would not compile within SubGraph Nodes.
-- The Sub Graph Outputs node can no longer be duplicated.
 
 ## [5.6.0] - 2019-02-21
 ### Fixed
