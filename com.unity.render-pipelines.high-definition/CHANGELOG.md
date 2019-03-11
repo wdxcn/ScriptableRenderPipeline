@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [6.6.0-preview] - 2019-XX-XX
+### Added
+- Added preliminary changes for XR deferred shading
 
 ### Fixed
 - Fixed instance identifier semantic string used by Shader Graph
@@ -32,6 +34,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Restored shadows in the Cascade Shadow debug visualization
 - `camera.RenderToCubemap` use proper face culling
 - Fixed HDRI sky intensity lux mode
+- Fixed dynamic resolution for XR
 
 ### Changed
 - When rendering reflection probe disable all specular lighting and for metals use fresnelF0 as diffuse color for bake lighting.
