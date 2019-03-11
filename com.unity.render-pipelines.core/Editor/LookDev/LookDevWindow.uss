@@ -1,0 +1,42 @@
+.container {
+    margin: 0px;
+    flex: 1;
+    flex-direction: row;
+}
+
+.VerticalSplit {
+    flex-direction: column;
+}
+
+.HorizontalSplit {
+    flex-direction: row;
+}
+
+#viewContainers {
+    height: 150px;
+    flex-shrink: 0;
+}
+
+.oneView > #viewA {
+    flex: 1;
+}
+
+.oneView > #viewB {
+    flex: 0;
+}
+
+.twoViews >  #viewA {
+    flex: 0.5;
+}
+
+.twoViews >  #viewB {
+    flex: 0.5;
+}
+
+#viewA {
+    background-color: rgb(255, 0, 0);
+}
+
+#viewB {
+    background-color: rgb(0, 255, 0);
+}
