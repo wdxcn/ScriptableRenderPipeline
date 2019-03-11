@@ -20,12 +20,19 @@ namespace UnityEditor.ShaderGraph
         , IMayRequirePosition
         , IMayRequireVertexColor
         , IMayRequireTime
+        , IMayRequireFaceSign
     {
         [SerializeField]
         private string m_SerializedSubGraph = string.Empty;
 
         [NonSerialized]
         MaterialSubGraphAsset m_SubGraph;
+
+        [SerializeField]
+        List<string> m_PropertyGuids = new List<string>();
+
+        [SerializeField]
+        List<int> m_PropertyIds = new List<int>();
 
         [Serializable]
         private class SubGraphHelper
@@ -127,7 +134,7 @@ namespace UnityEditor.ShaderGraph
             var arguments = new List<string>();
             foreach (var prop in referencedGraph.properties)
             {
-                var inSlotId = prop.guid.GetHashCode();
+                var inSlotId = m_PropertyIds[m_PropertyGuids.IndexOf(prop.guid.ToString())];
 
                 if (prop is TextureShaderProperty)
                     arguments.Add(string.Format("TEXTURE2D_ARGS({0}, sampler{0})", GetSlotValue(inSlotId, generationMode)));
@@ -225,13 +232,16 @@ namespace UnityEditor.ShaderGraph
                         throw new ArgumentOutOfRangeException();
                 }
 
-                var id = prop.guid.GetHashCode();
-
-                MaterialSlot slot;
-                if(propType == PropertyType.Color)
-                    slot = new ColorRGBAMaterialSlot(id, prop.displayName, prop.referenceName, SlotType.Input, prop.defaultValue, ShaderStageCapability.All);
-                else
-                    slot = MaterialSlot.CreateMaterialSlot(slotType, id, prop.displayName, prop.referenceName, SlotType.Input, prop.defaultValue, ShaderStageCapability.All);
+                var propertyString = prop.guid.ToString();
+                var propertyIndex = m_PropertyGuids.IndexOf(propertyString);
+                if (propertyIndex < 0)
+                {
+                    propertyIndex = m_PropertyGuids.Count;
+                    m_PropertyGuids.Add(propertyString);
+                    m_PropertyIds.Add(prop.guid.GetHashCode());
+                }
+                var id = m_PropertyIds[propertyIndex];
+                MaterialSlot slot = MaterialSlot.CreateMaterialSlot(slotType, id, prop.displayName, prop.referenceName, SlotType.Input, prop.defaultValue, ShaderStageCapability.All);
                 
                 // copy default for texture for niceness
                 if (slotType == SlotValueType.Texture2D && propType == PropertyType.Texture2D)
@@ -506,6 +516,14 @@ namespace UnityEditor.ShaderGraph
                 return false;
 
             return activeNodes.OfType<IMayRequireTime>().Any(x => x.RequiresTime());
+        }
+
+        public bool RequiresFaceSign(ShaderStageCapability stageCapability)
+        {
+            if (referencedGraph == null)
+                return false;
+
+            return activeNodes.OfType<IMayRequireFaceSign>().Any(x => x.RequiresFaceSign());
         }
 
         public NeededCoordinateSpace RequiresBitangent(ShaderStageCapability stageCapability)
