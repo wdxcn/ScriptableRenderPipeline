@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [6.6.0-preview] - 2019-XX-XX
 
+### Added
+- Added preliminary changes for XR deferred shading
+
 ## [6.5.0-preview] - 2019-03-07
 
 ### Added
@@ -29,6 +32,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Restored shadows in the Cascade Shadow debug visualization
 - `camera.RenderToCubemap` use proper face culling
 - Fixed HDRI sky intensity lux mode
+- Fixed dynamic resolution for XR
 
 ### Changed
 - When rendering reflection probe disable all specular lighting and for metals use fresnelF0 as diffuse color for bake lighting.
