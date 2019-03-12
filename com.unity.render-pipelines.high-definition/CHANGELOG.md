@@ -6,6 +6,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [5.8.0-preview] - 2019-XX-XX
 
+### Added
+- Added preliminary changes for XR deferred shading
+
+### Fixed
+- Fixed instance identifier semantic string used by Shader Graph
+- `camera.RenderToCubemap` use proper face culling
+- Fixed HDRI sky intensity lux mode
+- Fixed dynamic resolution for XR
+- Fixed null culling result occuring when changing scene that was causing crashes
+- Fixed normal map blending in TerrainLit by only blending the derivatives
+
+### Changed
+- TerrainLit shaders and includes are reorganized and made simpler.
+- TerrainLit shader GUI now allows custom properties to be displayed in the Terrain fold-out section.
+
 ## [5.7.0-preview] - 2019-03-07
 
 ### Added
@@ -34,7 +49,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [5.6.0-preview] - 2019-02-21
 
-
 ### Added
 - VR: Added TextureXR system to selectively expand TEXTURE2D macros to texture array for single-pass stereo instancing + Convert textures call to these macros
 - Added an unit selection dropdown next to shutter speed (camera)
@@ -54,6 +68,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - When a lit material has a clear coat mask that is not null, we now use the clear coat roughness to compute the screen space reflection.
 - Update UI for 32bit/16bit shadow precision settings in HDRP asset
 - Object motion vectors have been disabled in all but the game view. Camera motion vectors are still enabled everywhere, allowing TAA and Motion Blur to work on static objects.
+- Enable texture array by default for most rendering code on DX11 and unlock stereo instancing (DX11 only for now)
 
 ## [5.5.0-preview] - 2019-02-18
 

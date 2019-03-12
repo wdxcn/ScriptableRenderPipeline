@@ -88,9 +88,9 @@
 #endif
 
 // Notes on current stereo support status
-// single-pass doule-wide is the only working at the moment
-// single-pass instancing is in progress
-// multi-view and multi-pass are not supported
+// single-pass doule-wide is working but will be deprecated soon
+// single-pass instancing is the default method
+// multi-view and multi-pass are not yet supported
 // see Unity\Shaders\Includes\UnityShaderVariables.cginc for impl used by the C++ renderer
 #if defined(USING_STEREO_MATRICES)
 
