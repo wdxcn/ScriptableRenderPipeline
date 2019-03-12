@@ -6,14 +6,22 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [5.8.0] - 2019-XX-XX
 ### Added
+- You can now add Matrix, Sampler State, and Gradient properties to the Blackboard.
 - Added Custom Function node. Use this node to define a custom HLSL function either via string directly in the graph, or via a path to an HLSL file.
 
 ### Changed
+- Removed Blackboard fields, which had no effect on Sub Graph input ports, from the Sub Graph Blackboard.
 - Subgraph Output node is now called Output.
 - Subgraph Output node now supports renaming of ports.
 - Subgraph Output node now supports all port types.
 - Subgraph Output node now supports reordering ports.
 - When you convert nodes to a Sub Graph, Shader Graph generates properties and output ports in the Sub Graph, and now by default, names those resulting properties and output ports based on their types.
+
+### Fixed
+- Fixed an error when opening saved Shader Graphs containing one or more Voronoi nodes.
+- You can now drag normal map type textures on to a Shader Graph to create Sample Texture 2D nodes with the correct type set.
+- Fixed the Multiply node so default input values are applied correctly.
+- Fixed an issue where IsFaceSign would not compile within SubGraph Nodes.
 
 ## [5.7.0] - 2019-03-07
 - Fixed master preview for HDRP master nodes when alpha clip is enabled.
