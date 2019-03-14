@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using UnityEditor.UIElements;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace UnityEditor.Rendering.LookDev
@@ -10,18 +12,19 @@ namespace UnityEditor.Rendering.LookDev
     {
         VisualElement views;
         VisualElement environment;
-        
+
         const string oneViewClass = "oneView";
         const string twoViewsClass = "twoViews";
-        
-        LookDevContext.Display layout
+        const string showHDRIClass = "showHDRI";
+
+        LayoutContext.Layout layout
         {
-            get => LookDev.currentContext.displayLayout;
+            get => LookDev.currentContext.layout.viewLayout;
             set
             {
-                if (LookDev.currentContext.displayLayout != value)
+                if (LookDev.currentContext.layout.viewLayout != value)
                 {
-                    if (value == LookDevContext.Display.HorizontalSplit || value == LookDevContext.Display.VerticalSplit)
+                    if (value == LayoutContext.Layout.HorizontalSplit || value == LayoutContext.Layout.VerticalSplit)
                     {
                         if (views.ClassListContains(oneViewClass))
                         {
@@ -38,40 +41,88 @@ namespace UnityEditor.Rendering.LookDev
                         }
                     }
 
-                    if (views.ClassListContains(LookDev.currentContext.displayLayout.ToString()))
-                        views.RemoveFromClassList(LookDev.currentContext.displayLayout.ToString());
+                    if (views.ClassListContains(LookDev.currentContext.layout.viewLayout.ToString()))
+                        views.RemoveFromClassList(LookDev.currentContext.layout.viewLayout.ToString());
                     views.AddToClassList(value.ToString());
 
-                    var tmpContext = LookDev.currentContext;
-                    tmpContext.displayLayout = value;
-                    LookDev.currentContext = tmpContext;
+                    LookDev.currentContext.layout.viewLayout = value;
                 }
             }
         }
 
 
+        bool showHDRI
+        {
+            get => LookDev.currentContext.layout.showHDRI;
+            set
+            {
+                if (LookDev.currentContext.layout.showHDRI != value)
+                {
+                    if (value)
+                    {
+                        if (!views.ClassListContains(showHDRIClass))
+                            views.AddToClassList(showHDRIClass);
+                    }
+                    else
+                    {
+                        if (views.ClassListContains(showHDRIClass))
+                            views.RemoveFromClassList(showHDRIClass);
+                    }
+
+                    LookDev.currentContext.layout.showHDRI = value;
+                }
+            }
+        }
 
         void OnEnable()
         {
-            //titleContent = LookDevStyle.WindowTitleAndIcon;
-            
             rootVisualElement.styleSheets.Add(AssetDatabase.LoadAssetAtPath<StyleSheet>(LookDevStyle.k_uss));
 
+            var toolbar = new Toolbar() { name = "toolBar" };
+            rootVisualElement.Add(toolbar);
+            var radiobar = new Toolbar();
+            radiobar.Add(new ToolbarButton() { text = "test1" });
+            radiobar.Add(new ToolbarButton() { text = "test2" });
+            radiobar.Add(new ToolbarButton() { text = "test3" });
+            toolbar.Add(radiobar);
+            toolbar.Add(new ToolbarSpacer());
+            toolbar.Add(new ToolbarButton() { text = "testqlegu" });
+            toolbar.Add(new ToolbarSpacer());
+
+            var trueRadioBar = new ToolbarRadio() { name = "toolBar" };
+            trueRadioBar.AddRadios(new[] { "0", "1", "2" });
+            trueRadioBar.RegisterCallback((ChangeEvent<int> evt) => Debug.Log(evt.newValue));
+            toolbar.Add(trueRadioBar);
+
             views = new VisualElement() { name = "viewContainers" };
-            views.AddToClassList(layout == LookDevContext.Display.HorizontalSplit || layout == LookDevContext.Display.VerticalSplit ? "twoViews" : "oneView");
+            views.AddToClassList(LookDev.currentContext.layout.isMultiView ? twoViewsClass : oneViewClass);
             views.AddToClassList("container");
+            if (showHDRI)
+                views.AddToClassList(showHDRIClass);
             rootVisualElement.Add(views);
+
             var viewA = new VisualElement() { name = "viewA" };
             views.Add(viewA);
-            views.Add(new VisualElement() { name = "viewB" });
+            var viewB = new VisualElement() { name = "viewB" };
+            views.Add(viewB);
+            var hdri = new VisualElement() { name = "HDRI" };
+            views.Add(hdri);
+
+            viewA.Add(new Image() { image = UnityEngine.Texture2D.whiteTexture, scaleMode = UnityEngine.ScaleMode.ScaleToFit });
 
             rootVisualElement.Add(new Button(() =>
             {
-                if (layout  == LookDevContext.Display.HorizontalSplit)
-                    layout = LookDevContext.Display.FullA;
-                else if (layout == LookDevContext.Display.FullA)
-                    layout = LookDevContext.Display.HorizontalSplit;
-            }) { text = "One/Two views" });
+                if (layout == LayoutContext.Layout.HorizontalSplit)
+                    layout = LayoutContext.Layout.FullA;
+                else if (layout == LayoutContext.Layout.FullA)
+                    layout = LayoutContext.Layout.HorizontalSplit;
+            })
+            { text = "One/Two views" });
+
+            rootVisualElement.Add(new Button(() => showHDRI ^= true)
+            { text = "Show HDRI" });
+
         }
     }
+    
 }

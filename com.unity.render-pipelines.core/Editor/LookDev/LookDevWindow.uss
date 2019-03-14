@@ -25,11 +25,11 @@
     flex: 0;
 }
 
-.twoViews >  #viewA {
+.twoViews > #viewA {
     flex: 0.5;
 }
 
-.twoViews >  #viewB {
+.twoViews > #viewB {
     flex: 0.5;
 }
 
@@ -39,4 +39,22 @@
 
 #viewB {
     background-color: rgb(0, 255, 0);
+}
+
+.showHDRI > #HDRI {
+	width: 200px;
+}
+
+#HDRI {
+    float: right;
+    background-color: rgb(0, 0, 255);
+}
+
+#toolBar {
+    flex-direction: row;
+}
+
+.toolBar > #Button
+{
+    width: 200px;
 }

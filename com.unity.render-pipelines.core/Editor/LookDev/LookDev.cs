@@ -29,7 +29,7 @@ namespace UnityEditor.Rendering.LookDev
 
         const string lastContextSavePath = "Library/LookDevConfig.asset";
 
-        static LookDevContext s_currentContext = LookDevContext.@default;
+        static LookDevContext s_currentContext = UnityEngine.ScriptableObject.CreateInstance<LookDevContext>();
 
         public static LookDevContext currentContext
         {
@@ -41,21 +41,16 @@ namespace UnityEditor.Rendering.LookDev
             }
         }
 
-        public static void ResetConfig() => s_currentContext = LookDevContext.@default;
+        public static void ResetConfig() => s_currentContext = UnityEngine.ScriptableObject.CreateInstance<LookDevContext>();
 
         public static void LoadConfig(string path = lastContextSavePath)
         {
-            var last = InternalEditorUtility.LoadSerializedFileAndForget(path)?[0];
-            if (last != null && !last.Equals(null) && last is LookDevSave)
-                s_currentContext = ((LookDevSave)last).context;
+            var last = InternalEditorUtility.LoadSerializedFileAndForget(path)?[0] as LookDevContext;
+            if (last != null && !last.Equals(null))
+                s_currentContext = ((LookDevContext)last);
         }
 
         public static void SaveConfig(string path = lastContextSavePath)
-        {
-            var save = UnityEngine.ScriptableObject.CreateInstance<LookDevSave>();
-            save.context = s_currentContext;
-            InternalEditorUtility.SaveToSerializedFileAndForget(new[] { save }, path, true);
-        }
-
+            => InternalEditorUtility.SaveToSerializedFileAndForget(new[] { s_currentContext }, path, true);
     }
 }
