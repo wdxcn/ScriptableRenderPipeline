@@ -109,7 +109,12 @@ namespace UnityEditor.ShaderGraph.Drawing
             {
                 m_RefreshTimedNodes = true;
             }
-            
+
+            if (m_MasterRenderData == renderData && onPrimaryMasterChanged != null)
+            {
+                onPrimaryMasterChanged();
+            }
+
             m_NodesToUpdate.Add(node);
         }
 
@@ -451,7 +456,7 @@ namespace UnityEditor.ShaderGraph.Drawing
                 return;
             }
 
-            var previousRenderTexure = RenderTexture.active;
+            var previousRenderTexture = RenderTexture.active;
 
             //Temp workaround for alpha previews...
             var temp = RenderTexture.GetTemporary(renderData.renderTexture.descriptor);
@@ -469,7 +474,7 @@ namespace UnityEditor.ShaderGraph.Drawing
             Graphics.Blit(temp, renderData.renderTexture, m_SceneResources.blitNoAlphaMaterial);
             RenderTexture.ReleaseTemporary(temp);
 
-            RenderTexture.active = previousRenderTexure;
+            RenderTexture.active = previousRenderTexture;
             renderData.texture = renderData.renderTexture;
         }
 
@@ -542,6 +547,12 @@ namespace UnityEditor.ShaderGraph.Drawing
                 m_MasterRenderData =
                     m_RenderDatas.FirstOrDefault(x => x?.shaderData.node is IMasterNode && x != renderData);
                 ResizeMasterPreview(new Vector2(400, 400));
+
+                if (m_MasterRenderData != null)
+                {
+                    m_NodesToUpdate.Add(m_MasterRenderData.shaderData.node);
+                }
+                
                 if (onPrimaryMasterChanged != null)
                     onPrimaryMasterChanged();
             }

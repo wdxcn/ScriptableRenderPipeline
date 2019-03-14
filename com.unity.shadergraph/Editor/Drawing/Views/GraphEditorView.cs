@@ -695,8 +695,9 @@ namespace UnityEditor.ShaderGraph.Drawing
 
         void OnPrimaryMasterChanged()
         {
-            m_MasterPreviewView.RemoveFromHierarchy();
+            m_MasterPreviewView?.RemoveFromHierarchy();
             CreateMasterPreview();
+            ApplyMasterPreviewLayout();
         }
 
         void HandleEditorViewChanged(GeometryChangedEvent evt)
@@ -715,10 +716,7 @@ namespace UnityEditor.ShaderGraph.Drawing
 
             if (m_FloatingWindowsLayout != null)
             {
-                // Restore master preview layout
-                m_FloatingWindowsLayout.previewLayout.ApplyPosition(m_MasterPreviewView);
-                m_MasterPreviewView.previewTextureView.style.width = m_FloatingWindowsLayout.masterPreviewSize.x;
-                m_MasterPreviewView.previewTextureView.style.height = m_FloatingWindowsLayout.masterPreviewSize.y;
+                ApplyMasterPreviewLayout();
 
                 // Restore blackboard layout, and make sure that it remains in the view.
                 Rect blackboardRect = m_FloatingWindowsLayout.blackboardLayout.GetLayout(this.layout);
@@ -746,6 +744,13 @@ namespace UnityEditor.ShaderGraph.Drawing
 
             // After the layout is restored, track changes in layout and make the blackboard have the same behavior as the preview w.r.t. docking.
             RegisterCallback<GeometryChangedEvent>(HandleEditorViewChanged);
+        }
+
+        void ApplyMasterPreviewLayout()
+        {
+            m_FloatingWindowsLayout.previewLayout.ApplyPosition(m_MasterPreviewView);
+            m_MasterPreviewView.previewTextureView.style.width = m_FloatingWindowsLayout.masterPreviewSize.x;
+            m_MasterPreviewView.previewTextureView.style.height = m_FloatingWindowsLayout.masterPreviewSize.y;
         }
 
         void UpdateSerializedWindowLayout()
