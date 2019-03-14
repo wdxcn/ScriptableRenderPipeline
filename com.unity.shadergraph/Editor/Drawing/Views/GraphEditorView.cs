@@ -521,7 +521,8 @@ namespace UnityEditor.ShaderGraph.Drawing
                 }
                 else
                 {
-                    nodeView.AttachError(messageData.Value.First().message);
+                    var foundMessage = messageData.Value.First();
+                    nodeView.AttachMessage(foundMessage.message, foundMessage.severity);
                 }
             }
         }

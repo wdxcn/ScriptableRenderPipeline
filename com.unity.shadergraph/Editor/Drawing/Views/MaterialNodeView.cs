@@ -8,6 +8,7 @@ using UnityEditor.ShaderGraph.Drawing.Controls;
 using UnityEngine.Rendering;
 
 using UnityEditor.Experimental.GraphView;
+using UnityEditor.Rendering;
 using UnityEngine.UIElements;
 using Node = UnityEditor.Experimental.GraphView.Node;
 
@@ -154,7 +155,7 @@ namespace UnityEditor.ShaderGraph.Drawing
 
                 if (!masterNode.IsPipelineCompatible(GraphicsSettings.renderPipelineAsset))
                 {
-                    AttachError("The current render pipeline is not compatible with this master node.");
+                    AttachMessage("The current render pipeline is not compatible with this master node.", ShaderCompilerMessageSeverity.Error);
                 }
             }
 
@@ -198,16 +199,25 @@ namespace UnityEditor.ShaderGraph.Drawing
             }
         }
 
-        public void AttachError(string errString)
+        public void AttachMessage(string errString, ShaderCompilerMessageSeverity severity)
         {
-            ClearError();
-            var badge = IconBadge.CreateError(errString);
+            ClearMessage();
+            IconBadge badge;
+            if (severity == ShaderCompilerMessageSeverity.Error)
+            {
+                badge = IconBadge.CreateError(errString);
+            }
+            else
+            {
+                badge = IconBadge.CreateComment(errString);
+            }
+
             Add(badge);
             var myTitle = this.Q("title");
             badge.AttachTo(myTitle, SpriteAlignment.RightCenter);
         }
 
-        public void ClearError()
+        public void ClearMessage()
         {
             var badge = this.Q<IconBadge>();
             if(badge != null)

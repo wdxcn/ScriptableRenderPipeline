@@ -5,6 +5,7 @@ using NUnit.Framework;
 using UnityEditor.Graphing;
 using UnityEngine;
 using UnityEditor.Graphing.Util;
+using UnityEditor.Rendering;
 
 namespace UnityEditor.ShaderGraph.UnitTests
 {
@@ -21,6 +22,8 @@ namespace UnityEditor.ShaderGraph.UnitTests
         ShaderMessage e1 = new ShaderMessage("e1");
         ShaderMessage e2 = new ShaderMessage("e2");
         ShaderMessage e3 = new ShaderMessage("e3");
+        ShaderMessage w0 = new ShaderMessage("w0", ShaderCompilerMessageSeverity.Warning);
+        ShaderMessage w1 = new ShaderMessage("w1", ShaderCompilerMessageSeverity.Warning);
 
         [SetUp]
         public void Setup()
@@ -135,8 +138,39 @@ namespace UnityEditor.ShaderGraph.UnitTests
             Assert.AreEqual(e0, ret[0].Value[0]);
             Assert.AreEqual(e1, ret[0].Value[1]);
         }
-        
 
+        [Test]
+        public void Warnings_SortedAfterErrors()
+        {
+            var mixedMgr = new MessageManager();
+            mixedMgr.AddOrAppendError(p0, node0, e0);
+            mixedMgr.AddOrAppendError(p0, node0, w0);
+            mixedMgr.AddOrAppendError(p0, node0, e1);
+            mixedMgr.AddOrAppendError(p0, node0, w1);
+
+            var ret = GetListFrom(mixedMgr)[0].Value;
+            Assert.AreEqual(e0, ret[0]);
+            Assert.AreEqual(e1, ret[1]);
+            Assert.AreEqual(w0, ret[2]);
+            Assert.AreEqual(w1, ret[3]);
+        }
+
+        [Test]
+        public void Warnings_FromDifferentProviders_SortedAfterErrors()
+        {
+            var mixedMgr = new MessageManager();
+            mixedMgr.AddOrAppendError(p0, node0, e0);
+            mixedMgr.AddOrAppendError(p0, node0, w0);
+            mixedMgr.AddOrAppendError(p1, node0, e1);
+            mixedMgr.AddOrAppendError(p1, node0, w1);
+            
+            var ret = GetListFrom(mixedMgr)[0].Value;
+            Assert.AreEqual(e0, ret[0]);
+            Assert.AreEqual(e1, ret[1]);
+            Assert.AreEqual(w0, ret[2]);
+            Assert.AreEqual(w1, ret[3]);
+        }
+        
         [Test]
         public void MultipleNodes_RemainSeparate()
         {

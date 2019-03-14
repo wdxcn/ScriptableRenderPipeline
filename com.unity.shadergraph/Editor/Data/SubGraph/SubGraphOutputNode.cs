@@ -5,6 +5,7 @@ using System.Reflection;
 using UnityEditor.ShaderGraph.Drawing.Controls;
 using UnityEngine;
 using UnityEditor.Graphing;
+using UnityEditor.Rendering;
 using UnityEngine.UIElements;
 
 namespace UnityEditor.ShaderGraph
@@ -48,6 +49,8 @@ namespace UnityEditor.ShaderGraph
 
     class SubGraphOutputNode : AbstractMaterialNode
     {
+        static string s_MissingOutputSlot = "A Sub Graph must have at least one output slot";
+
         [SubGraphOutputControl]
         int controlDummy { get; set; }
 
@@ -103,6 +106,11 @@ namespace UnityEditor.ShaderGraph
         {
             ValidateShaderStage();
 
+            if (!this.GetInputSlots<MaterialSlot>().Any())
+            {
+                owner.AddValidationError(tempId, s_MissingOutputSlot, ShaderCompilerMessageSeverity.Warning);
+            }
+            
             base.ValidateNode();
         }
 
@@ -110,7 +118,7 @@ namespace UnityEditor.ShaderGraph
         {
             var index = this.GetInputSlots<ISlot>().Count() + 1;
             AddSlot(new Vector4MaterialSlot(index, "Output " + index, "Output" + index, SlotType.Input, Vector4.zero));
-            Dirty(ModificationScope.Topological);
+            OnSlotsChanged();
             return index;
         }
 
@@ -121,7 +129,14 @@ namespace UnityEditor.ShaderGraph
                 return;
 
             RemoveSlot(index);
+            OnSlotsChanged();
+        }
+
+        void OnSlotsChanged()
+        {
             Dirty(ModificationScope.Topological);
+            owner.ClearErrorsForNode(this);
+            ValidateNode();
         }
 
         public void RemapOutputs(ShaderGenerator visitor, GenerationMode generationMode)

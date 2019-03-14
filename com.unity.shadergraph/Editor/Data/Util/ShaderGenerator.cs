@@ -834,8 +834,9 @@ namespace UnityEditor.ShaderGraph
             }
             else
             {
-                // Until we have a better error system, give them something
-                pixelShaderSurfaceRemap.AppendLine("return No_Slots_Found_For_Preview");
+                // No valid slots to display, so just show black.
+                // It's up to each node to error or warn as appropriate.
+                pixelShaderSurfaceRemap.AppendLine("return 0;");
             }
 
             // -------------------------------------

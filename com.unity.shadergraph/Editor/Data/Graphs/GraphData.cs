@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEditor.Graphing;
 using UnityEditor.Graphing.Util;
+using UnityEditor.Rendering;
 using Edge = UnityEditor.Graphing.Edge;
 
 namespace UnityEditor.ShaderGraph
@@ -756,11 +757,17 @@ namespace UnityEditor.ShaderGraph
             }
         }
 
-        public void AddValidationError(Identifier id, string errorMessage)
+        public void AddValidationError(Identifier id, string errorMessage,
+            ShaderCompilerMessageSeverity severity = ShaderCompilerMessageSeverity.Error)
         {
-            messageManager?.AddOrAppendError(this, id, new ShaderMessage(errorMessage));;
+            messageManager?.AddOrAppendError(this, id, new ShaderMessage(errorMessage, severity));
         }
-        
+
+        public void ClearErrorsForNode(AbstractMaterialNode node)
+        {
+            messageManager?.ClearNodesFromProvider(this, node.ToEnumerable());
+        }
+
         public void ReplaceWith(GraphData other)
         {
             if (other == null)

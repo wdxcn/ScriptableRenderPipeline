@@ -475,7 +475,6 @@ namespace UnityEditor.ShaderGraph.Drawing
 
         void CheckForErrors(PreviewShaderData shaderData)
         {
-            m_Messenger.ClearNodesFromProvider(this, shaderData.node.ToEnumerable());
             shaderData.hasError = ShaderUtil.ShaderHasError(shaderData.shader);
             if (shaderData.hasError)
             {
