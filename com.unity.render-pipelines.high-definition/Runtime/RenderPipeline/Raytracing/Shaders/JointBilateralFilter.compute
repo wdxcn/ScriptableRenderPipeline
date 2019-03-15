@@ -37,7 +37,6 @@ void JointBilateralFilter(uint2 groupThreadId : SV_GroupThreadID, uint2 groupId 
 {
 	// Fetch the current pixel coordinate
 	uint2 currentPixelCoordinate = groupId * AREA_BILLATERAL_TILE_SIZE + groupThreadId;
-    currentPixelCoordinate.x = currentPixelCoordinate.x + (unity_StereoEyeIndex * _ScreenSize.x);
 
     // Read the central pixel values
     float depthValue  = ReadDepthValue(currentPixelCoordinate);

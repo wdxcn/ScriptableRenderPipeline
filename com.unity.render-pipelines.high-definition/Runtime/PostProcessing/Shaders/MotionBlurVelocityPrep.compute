@@ -47,7 +47,6 @@ float2 ComputeVelocity(PositionInputs posInput, float2 sampledVelocity)
     velCameraRot.y = -velCameraRot.y;
 #endif
 
-    velCameraRot.x = velCameraRot.x * _TextureWidthScaling.y;
     velCameraRot *= 0.5f;
     float2 velWithoutRot = sampledVelocity - velCameraRot;
     velCameraRot *= _MotionBlurIntensity;
