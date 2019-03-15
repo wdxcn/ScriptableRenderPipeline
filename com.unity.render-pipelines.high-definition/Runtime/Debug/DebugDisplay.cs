@@ -23,6 +23,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
         // Raytracing
         LightCluster,
         RaytracedAreaShadow,
+        IndirectDiffuse,
         MaxLightingFullScreenDebug,
 
         // Rendering
@@ -31,7 +32,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
         NanTracker,
         MaxRenderingFullScreenDebug,
 
-        //Materail
+        //Material
         MinMaterialFullScreenDebug,
         ValidateDiffuseColor,
         ValidateSpecularColor,
@@ -81,7 +82,14 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
             public FalseColorDebugSettings falseColorDebugSettings = new FalseColorDebugSettings();
             public DecalsDebugSettings decalsDebugSettings = new DecalsDebugSettings();
             public MSAASamples msaaSamples = MSAASamples.None;
-            
+
+            // Raytracing
+#if ENABLE_RAYTRACING
+            public bool countRays = false;
+            public bool showRaysPerFrame = false;
+            public Color raysPerFrameFontColor = Color.white;
+#endif
+
             public int debugCameraToFreeze = 0;
 
             //saved enum fields for when repainting
@@ -308,12 +316,22 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
 
         void RegisterDisplayStatsDebug()
         {
-            m_DebugDisplayStatsItems = new DebugUI.Widget[]
+            var list = new List<DebugUI.Widget>();
+            list.Add(new DebugUI.Value { displayName = "Frame Rate (fps)", getter = () => 1f / Time.smoothDeltaTime, refreshRate = 1f / 30f });
+            list.Add(new DebugUI.Value { displayName = "Frame Time (ms)", getter = () => Time.smoothDeltaTime * 1000f, refreshRate = 1f / 30f });
+#if ENABLE_RAYTRACING
+            list.Add(new DebugUI.BoolField { displayName = "Count Rays", getter = () => data.countRays, setter = value => data.countRays = value, onValueChanged = RefreshDisplayStatsDebug });
+            if (data.countRays)
             {
-                new DebugUI.Value { displayName = "Frame Rate (fps)", getter = () => 1f / Time.smoothDeltaTime, refreshRate = 1f / 30f },
-                new DebugUI.Value { displayName = "Frame Time (ms)", getter = () => Time.smoothDeltaTime * 1000f, refreshRate = 1f / 30f }
-            };
-
+                list.Add(new DebugUI.Value { displayName = "AO (MRays/s)", getter = () => ((float)(RenderPipelineManager.currentPipeline as HDRenderPipeline).GetRaysPerFrame(RayCountManager.RayCountValues.AmbientOcclusion)) / 1e6f, refreshRate = 1f / 30f });
+                list.Add(new DebugUI.Value { displayName = "Reflection (MRays/s)", getter = () => ((float)(RenderPipelineManager.currentPipeline as HDRenderPipeline).GetRaysPerFrame(RayCountManager.RayCountValues.Reflection)) / 1e6f, refreshRate = 1f / 30f });
+                list.Add(new DebugUI.Value { displayName = "Area Shadow (MRays/s)", getter = () => ((float)(RenderPipelineManager.currentPipeline as HDRenderPipeline).GetRaysPerFrame(RayCountManager.RayCountValues.AreaShadow)) / 1e6f, refreshRate = 1f / 30f });
+                list.Add(new DebugUI.Value { displayName = "Total (MRays/s)", getter = () => ((float)(RenderPipelineManager.currentPipeline as HDRenderPipeline).GetRaysPerFrame(RayCountManager.RayCountValues.Total)) / 1e6f, refreshRate = 1f / 30f });
+                list.Add(new DebugUI.BoolField { displayName = "Display Ray Count", getter = () => data.showRaysPerFrame, setter = value => data.showRaysPerFrame = value, onValueChanged = RefreshDisplayStatsDebug });
+                list.Add(new DebugUI.ColorField { displayName = "Ray Count Font Color", getter = () => data.raysPerFrameFontColor, setter = value => data.raysPerFrameFontColor = value });
+            }
+#endif
+            m_DebugDisplayStatsItems = list.ToArray();
             var panel = DebugManager.instance.GetPanel(k_PanelDisplayStats, true);
             panel.flags = DebugUI.Flags.RuntimeOnly;
             panel.children.Add(m_DebugDisplayStatsItems);
@@ -347,6 +365,12 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
             m_DebugMaterialItems = list.ToArray();
             var panel = DebugManager.instance.GetPanel(k_PanelMaterials, true);
             panel.children.Add(m_DebugMaterialItems);
+        }
+
+        void RefreshDisplayStatsDebug<T>(DebugUI.Field<T> field, T value)
+        {
+            UnregisterDebugItems(k_PanelDisplayStats, m_DebugDisplayStatsItems);
+            RegisterDisplayStatsDebug();
         }
 
         // For now we just rebuild the lighting panel if needed, but ultimately it could be done in a better way

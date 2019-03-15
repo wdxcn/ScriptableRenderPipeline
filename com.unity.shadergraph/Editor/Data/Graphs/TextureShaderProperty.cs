@@ -52,6 +52,11 @@ namespace UnityEditor.ShaderGraph
             get { return false; }
         }
 
+        public override bool isExposable
+        {
+            get { return true; }
+        }
+
         public override string GetPropertyBlockString()
         {
             var result = new StringBuilder();
@@ -75,7 +80,7 @@ namespace UnityEditor.ShaderGraph
 
         public override string GetPropertyAsArgumentString()
         {
-            return string.Format("TEXTURE2D_ARGS({0}, sampler{0})", referenceName);
+            return string.Format("TEXTURE2D_PARAM({0}, sampler{0})", referenceName);
         }
 
         public override PreviewProperty GetPreviewMaterialProperty()

@@ -49,7 +49,7 @@ namespace UnityEditor.ShaderGraph.Drawing
         const string k_ToggleSettings = "UnityEditor.ShaderGraph.ToggleSettings";
         ToggleSettings m_ToggleSettings;
 
-        const string k_FloatingWindowsLayoutKey = "UnityEditor.ShaderGraph.FloatingWindowsLayout";
+        const string k_FloatingWindowsLayoutKey = "UnityEditor.ShaderGraph.FloatingWindowsLayout2";
         FloatingWindowsLayout m_FloatingWindowsLayout;
 
         public Action saveRequested { get; set; }
@@ -100,8 +100,25 @@ namespace UnityEditor.ShaderGraph.Drawing
             if (!string.IsNullOrEmpty(serializedWindowLayout))
             {
                 m_FloatingWindowsLayout = JsonUtility.FromJson<FloatingWindowsLayout>(serializedWindowLayout);
-                if (m_FloatingWindowsLayout.masterPreviewSize.x > 0f && m_FloatingWindowsLayout.masterPreviewSize.y > 0f)
-                    previewManager.ResizeMasterPreview(m_FloatingWindowsLayout.masterPreviewSize);
+            }
+            else
+            {
+                m_FloatingWindowsLayout = new FloatingWindowsLayout
+                {
+                    blackboardLayout =
+                    {
+                        dockingTop = true,
+                        dockingLeft = true,
+                        verticalOffset = 16,
+                        horizontalOffset = 16,
+                        size = new Vector2(200, 400)
+                    }
+                };
+            }
+            
+            if (m_FloatingWindowsLayout.masterPreviewSize.x > 0f && m_FloatingWindowsLayout.masterPreviewSize.y > 0f)
+            {
+                previewManager.ResizeMasterPreview(m_FloatingWindowsLayout.masterPreviewSize);
             }
 
             previewManager.RenderPreviews();
@@ -155,10 +172,6 @@ namespace UnityEditor.ShaderGraph.Drawing
 
                 m_BlackboardProvider = new BlackboardProvider(graph);
                 m_GraphView.Add(m_BlackboardProvider.blackboard);
-                Rect blackboardLayout = m_BlackboardProvider.blackboard.layout;
-                blackboardLayout.x = 10f;
-                blackboardLayout.y = 10f;
-                m_BlackboardProvider.blackboard.SetPosition(blackboardLayout);
 
                 // Initialize toggle settings if it doesnt exist.
                 if (m_ToggleSettings == null)
@@ -755,9 +768,6 @@ namespace UnityEditor.ShaderGraph.Drawing
 
         void UpdateSerializedWindowLayout()
         {
-            if (m_FloatingWindowsLayout == null)
-                m_FloatingWindowsLayout = new FloatingWindowsLayout();
-
             m_FloatingWindowsLayout.previewLayout.CalculateDockingCornerAndOffset(m_MasterPreviewView.layout, m_GraphView.layout);
             m_FloatingWindowsLayout.previewLayout.ClampToParentWindow();
 

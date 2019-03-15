@@ -24,8 +24,7 @@ Pass
     #pragma only_renderers d3d11 ps4 xboxone vulkan metal switch
     //#pragma enable_d3d11_debug_symbols
 
-    #pragma multi_compile_instancing
-    #pragma instancing_options renderinglayer
+    $splice(InstancingOptions)
 
     #pragma multi_compile _ LOD_FADE_CROSSFADE
 
@@ -55,6 +54,8 @@ Pass
     $DisableDecals:                      #define _DISABLE_DECALS 1
     $DisableSSR:                         #define _DISABLE_SSR 1
     $DoubleSided:                        #define _DOUBLESIDED_ON 1
+    $TransparentWritesVelocity:          #define _WRITE_TRANSPARENT_VELOCITY 1
+    $DepthOffset:                        #define _DEPTHOFFSET_ON 1
 
     //-------------------------------------------------------------------------------------
     // End Variant Definitions
@@ -167,7 +168,7 @@ $include("SharedCode.template.hlsl")
         $SurfaceDescription.Metallic:                   surfaceData.metallic =                  surfaceDescription.Metallic;
         $SurfaceDescription.SubsurfaceMask:             surfaceData.subsurfaceMask =            surfaceDescription.SubsurfaceMask;
         $SurfaceDescription.Thickness:                  surfaceData.thickness =                 surfaceDescription.Thickness;
-        $SurfaceDescription.DiffusionProfile:           surfaceData.diffusionProfile =          surfaceDescription.DiffusionProfile;
+        $SurfaceDescription.DiffusionProfileHash:       surfaceData.diffusionProfileHash =      asuint(surfaceDescription.DiffusionProfileHash);
         $SurfaceDescription.Specular:                   surfaceData.specularColor =             surfaceDescription.Specular;
         $SurfaceDescription.CoatMask:                   surfaceData.coatMask =                  surfaceDescription.CoatMask;
         $SurfaceDescription.Anisotropy:                 surfaceData.anisotropy =                surfaceDescription.Anisotropy;
@@ -305,22 +306,23 @@ $include("SharedCode.template.hlsl")
         $AlphaTestPrepass:  DoAlphaTest(surfaceDescription.Alpha, surfaceDescription.AlphaClipThresholdDepthPrepass);
         $AlphaTestPostpass: DoAlphaTest(surfaceDescription.Alpha, surfaceDescription.AlphaClipThresholdDepthPostpass);
         $AlphaTestShadow:   DoAlphaTest(surfaceDescription.Alpha, surfaceDescription.AlphaClipThresholdShadow);
+        
+        $DepthOffset: ApplyDepthOffsetPositionInput(V, surfaceDescription.DepthOffset, GetViewForwardDir(), GetWorldToHClipMatrix(), posInput);
 
         float3 bentNormalWS;
         BuildSurfaceData(fragInputs, surfaceDescription, V, posInput, surfaceData, bentNormalWS);
 
         // Builtin Data
         // For back lighting we use the oposite vertex normal 
-        InitBuiltinData(surfaceDescription.Alpha, bentNormalWS, -fragInputs.worldToTangent[2], fragInputs.positionRWS, fragInputs.texCoord1, fragInputs.texCoord2, builtinData);
-        
+        InitBuiltinData(posInput, surfaceDescription.Alpha, bentNormalWS, -fragInputs.worldToTangent[2], fragInputs.texCoord1, fragInputs.texCoord2, builtinData);
+
         // override sampleBakedGI:
         $LightingGI: builtinData.bakeDiffuseLighting = surfaceDescription.BakedGI;
         $BackLightingGI: builtinData.backBakeDiffuseLighting = surfaceDescription.BakedBackGI;
 
         $SurfaceDescription.Emission: builtinData.emissiveColor = surfaceDescription.Emission;
 
-        // TODO: Handle depth offset
-        //builtinData.depthOffset = 0.0;
+        $DepthOffset: builtinData.depthOffset = surfaceDescription.DepthOffset;
 
 #if (SHADERPASS == SHADERPASS_DISTORTION)
         builtinData.distortion = surfaceDescription.Distortion;
