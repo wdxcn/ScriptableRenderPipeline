@@ -72,6 +72,12 @@ namespace UnityEditor.ShaderGraph
             return index;
         }
 
+        protected override void OnSlotsChanged()
+        {
+            base.OnSlotsChanged();
+            ValidateNode();
+        }
+
         public void RemapOutputs(ShaderGenerator visitor, GenerationMode generationMode)
         {
             foreach (var slot in graphOutputs)

@@ -523,8 +523,8 @@ namespace UnityEditor.ShaderGraph
             m_Slots.Add(slot);
             slot.owner = this;
 
-            Dirty(ModificationScope.Topological);
-
+            OnSlotsChanged();
+            
             if (foundSlot == null)
                 return;
 
@@ -547,7 +547,13 @@ namespace UnityEditor.ShaderGraph
             //remove slots
             m_Slots.RemoveAll(x => x.id == slotId);
 
+            OnSlotsChanged();
+        }
+
+        protected virtual void OnSlotsChanged()
+        {
             Dirty(ModificationScope.Topological);
+            owner?.ClearErrorsForNode(this);
         }
 
         public void RemoveSlotsNameNotMatching(IEnumerable<int> slotIds, bool supressWarnings = false)
